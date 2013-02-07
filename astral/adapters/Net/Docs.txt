@@ -1,0 +1,123 @@
+Mastermind - v.1.5.2 - Ian Mallett - 2009
+
+-----------------CREDITS-----------------
+
+-Matthew Row (RB[0], roebros@gmail.com) for giving me inspriration for this project, and for a lot of my code (particularly his pickle/unpickle code idea), a quit code tweak, and for help with select.select() in lag-reduction techniques
+-Paul Davey (plmdvy@gmail.com) for helping with subclassing, select.select(), and various other things
+-PyMike (pymike93@gmail.com) for the use of his testing facilities, server hosting, advice and tweaks, and idea to make UDP capabilities.
+-Robin Wellner (gyvox) for a tweak on the pickle/unpickle error checking
+-Various others for their encouragement and support.
+
+---------------AN OVERVIEW---------------
+
+Mastermind is a networking engine built to use two types of internet protocols: TCP and UDP.  TCP is good for getting things from one place to another, guaranteed.  TCP implements checks to make sure data gets to where it needs to be.  This can make TCP somewhat slower than UDP, which is good for getting data from one place to another quickly.  UDP does not guarantee that the data arrives intact, or even at all.
+
+------------USAGE: TCP SERVER------------
+
+The basic TCP server:
+
+from Net import *
+class ServerHandler(TCPServer):
+    def __init__(self):
+        TCPServer.__init__(self)
+    def handle_data(self,data):
+        #process (perhaps)
+        self.send_data(#something)
+def main():
+    server = ServerHandler()
+    server.connect(#host,#port)
+    server.serve_forever()
+    server.quit()
+if __name__ == '__main__': main()
+
+To customize, add your server's logic to self.handle_data().  self.handle_data() is called every time the server receives data from one of its clients.  The data is passed as an argument to be dealt with.  From here, you can use the built-in function self.send_data(data) to send data back to the original sender.  See file "server_tcp.py"
+
+------------USAGE: TCP CLIENT------------
+
+The basic client:
+
+from Net import *
+client = TCPClient()
+client.connect(#host,#port)
+while True:
+    client.send_data(#something)
+
+    data = client.wait_for_data()
+    #OR
+    data = client.check_for_data()
+
+The data must be sent, then received.  It doesn't make sense to try to receive something when you haven't sent out a request for it.  client.send_data() sends data.  client.wait_for_data() blocks until it receives data from the server.  client.check_for_data() merely looks for data from the server.  If it finds any, it returns it, otherwise the server hasn't responded and None is returned.  Make sure that in this latter case, client.send_data() IS NOT CALLED.  To do so would basically be like sending data twice, breaking the cycle of send and receive.  See file "client_tcp.py".
+
+------------USAGE: UDP SERVER------------
+
+The basic TCP server:
+
+from Net import *
+class ServerHandler(UDPServer):
+    def __init__(self):
+        UDPServer.__init__(self)
+    def handle_data(self,data):
+        #process (perhaps)
+        self.send_data(#something)
+def main():
+    server = ServerHandler()
+    server.connect(#host,#port)
+    server.serve_forever()
+    server.quit()
+if __name__ == '__main__': main()
+
+To customize, add your server's logic to self.handle_data().  self.handle_data() is called every time the server receives data from one of its clients.  The data is passed as an argument to be dealt with.  From here, you can use the built-in function self.send_data(data) to send data back to the original sender.  See file "server_udp.py"
+
+------------USAGE: UDP CLIENT------------
+
+The basic client:
+
+from Net import *
+client = UDPClient()
+client.connect(#host,#port)
+while True:
+    client.send_data(#something)
+
+    data = client.wait_for_data()
+    #OR
+    data = client.check_for_data()
+
+The data must be sent, then received.  It doesn't make sense to try to receive something when you haven't sent out a request for it.  client.send_data() sends data.  client.wait_for_data() blocks until it receives data from the server.  client.check_for_data() merely looks for data from the server.  If it finds any, it returns it, otherwise the server hasn't responded and None is returned.  Make sure that in this latter case, client.send_data() IS NOT CALLED.  To do so would basically be like sending data twice, breaking the cycle of send and receive.  See file "client_udp.py".
+
+---------------STATUS INFO---------------
+
+The TCP Server has other built-in methods aside from those used in the examples above:
+
+#Called when the server receives data
+input_func(self,sock,host,port,address)
+
+#Called when the server sent data
+output_func(self,sock,host,port,address)
+
+#Called when the server connected
+connect_func(self,sock,host,port)
+
+#Called when a client connect to the server
+client_connect_func(self,sock,host,port,address)
+
+#Called when a client disconnected from the server
+client_disconnect_func(self,sock,host,port,address)
+
+#Called when the server quits.
+quit_func(self,host,port)
+
+The UDP Server has other built-in methods aside from those used in the examples above:
+
+#Called when the server receives data
+input_func(self,sock,host,port,address)
+
+#Called when the server sent data
+output_func(self,sock,host,port,address)
+
+#Called when the server connected
+connect_func(self,sock,host,port)
+
+#Called when the server quits.
+quit_func(self,host,port)
+
+These methods are called when the appropriate event transpires.  They currently do nothing, but can be overriden by one's ServerHandler, and can be used to execute certain server functions when something happens, such as print status messages. 
