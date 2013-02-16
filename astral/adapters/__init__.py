@@ -1,1 +1,0 @@
-from base_adapter import get_adapter
