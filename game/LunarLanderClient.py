@@ -33,6 +33,10 @@ class Client(ConnectionListener, Lander):
 	
 	def PenUp(self, e):
 		connection.Send({"action": "drawpoint", "point": e.pos})
+		
+	def LandedSafely(self, info):
+		print "event key down captured"
+		connection.Send({"action":"landedSuccessfully", "points_scored": info})
 	
 	###############################
 	### Network event callbacks ###

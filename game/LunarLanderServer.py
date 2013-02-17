@@ -5,7 +5,7 @@ from weakref import WeakKeyDictionary
 
 from PodSixNet.Server import Server
 from PodSixNet.Channel import Channel
-
+from collections import namedtuple
 class ServerChannel(Channel):
     """
     This is the server representation of a single connected client.
@@ -19,6 +19,7 @@ class ServerChannel(Channel):
         # TODO: Placeholder for initializing data we send to client
         self.color = [(intid + 1) % 3 * 84, (intid + 2) % 3 * 84, (intid + 3) % 3 * 84] #tuple([randint(0, 127) for r in range(3)])
         self.lines = []
+        self.score = 0;
     
     def PassOn(self, data):
         # pass on what we received to all connected clients
@@ -27,6 +28,18 @@ class ServerChannel(Channel):
     
     def Close(self):
         self._server.DelPlayer(self)
+    
+    def AddToSelfScore(self, data):
+        # add to the score of this client.
+        self.score += data['points_scored']
+        # generate the new leaderboard information
+        new_data ={}
+        
+        new_data.update({"print_leaderboard": self._server.getLeaderboard()})
+        new_data.update({"action":"print_leaderboard"})
+        #send this new information to all clients, they will just print this on their screens
+        
+        self.PassOn(new_data);
     
     ##################################
     ### Network specific callbacks ###
@@ -39,8 +52,13 @@ class ServerChannel(Channel):
     
     def Network_drawpoint(self, data):
         # TODO: Another update to data we send to client
+        print "drawpoint"
         self.lines[-1].append(data['point'])
         self.PassOn(data)
+    
+    def Network_landedSuccessfully(self, data):
+        print "event listed at server side"
+        self.AddToSelfScore(data)
 
 class LunarLanderServer(Server):
     channelClass = ServerChannel
@@ -81,6 +99,34 @@ class LunarLanderServer(Server):
         while True:
             self.Pump()
             sleep(0.0001)
+            
+    def getPlayerScore(self, pInfo):
+        return pInfo.score
+    
+    
+    def getLeaderboard(self):
+        leaderboard =[]
+        PlayerInfo = namedtuple('PlayerInfo','name score')
+        
+        for p in self.players:
+            row = PlayerInfo(name=p.id, score=p.score)
+            leaderboard.append(row)
+        leaderboard.sort(key=self.getPlayerScore,reverse=True)
+        print (self.leaderboardToString(leaderboard))
+        data = self.leaderboardToString(leaderboard)
+        return data
+    
+    
+    def playerInfoToString(self, pInfo):
+        return str(pInfo.name) +"  :  " + str(pInfo.score)
+    
+    def leaderboardToString(self, leaderboard):
+        returnString = "player  :   score"
+        returnString += "*"*10
+        for pInfo in leaderboard:
+            returnString += "\n" + self.playerInfoToString(pInfo)
+        returnString += "\n"+ "*"*10
+        return returnString
 
 # get command line argument of server, port
 if len(sys.argv) != 2:
@@ -90,4 +136,3 @@ else:
     host, port = sys.argv[1].split(":")
     s = LunarLanderServer(localaddr=(host, int(port)))
     s.Launch()
-

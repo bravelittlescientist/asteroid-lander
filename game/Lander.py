@@ -1,6 +1,6 @@
 from sys import exit
 from os import environ
-import pygame
+import pygame 
 
 SCREENSIZE = (640, 480)
 
@@ -34,6 +34,12 @@ class Lander:
 			if event.type == pygame.MOUSEBUTTONUP:
 				self.down = False
 				self.PenUp(event)
+			if event.type == pygame.KEYDOWN:
+				self.LandedSafely(12)
+	
+	def Hey(self):
+		#print "itna to chal"
+		self.HelloWorld()
 	
 	def Draw(self, linesets):
 	        screen.fill([255, 255, 255])
