@@ -69,7 +69,9 @@ class Client(ConnectionListener, Lander):
 	
 	def Network(self, data):
 		#print 'network:', data
-		pass
+		action = data['response_action']
+		if action==PRINT_LEADERBOARD:
+			print data['print_leaderboard']
 	
 	def Network_connected(self, data):
 		self.statusLabel = "connected"

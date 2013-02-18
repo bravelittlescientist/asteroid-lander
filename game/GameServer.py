@@ -37,11 +37,9 @@ class ServerChannel(Channel):
         self.score += data['points_scored']
         # generate the new leaderboard information
         new_data ={}
-        
         new_data.update({"print_leaderboard": self._server.getLeaderboard()})
-        new_data.update({"action":"print_leaderboard"})
+        new_data.update({"response_action":"print_leaderboard"})
         #send this new information to all clients, they will just print this on their screens
-        
         self.PassOn(new_data);
     
     ##################################
