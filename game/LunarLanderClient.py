@@ -3,6 +3,7 @@ from time import sleep
 
 from PodSixNet.Connection import connection, ConnectionListener
 from Lander import Lander
+from game.Constants import *
 
 class Client(ConnectionListener, Lander):
 	def __init__(self, host, port):
@@ -36,7 +37,7 @@ class Client(ConnectionListener, Lander):
 		
 	def LandedSafely(self, info):
 		print "event key down captured"
-		connection.Send({"action":"landedSuccessfully", "points_scored": info})
+		connection.Send({"request_action":LANDED_SUCCESSFULLY, "points_scored": info})
 	
 	###############################
 	### Network event callbacks ###

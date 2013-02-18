@@ -6,6 +6,8 @@ from weakref import WeakKeyDictionary
 from PodSixNet.Server import Server
 from PodSixNet.Channel import Channel
 import ServerHelper
+from game.Constants import *
+from collections import namedtuple
 
 class ServerChannel(Channel):
     """
@@ -57,9 +59,12 @@ class ServerChannel(Channel):
         self.lines[-1].append(data['point'])
         self.PassOn(data)
     
-    def Network_landedSuccessfully(self, data):
+    def Networ(self, data):
         print "event listed at server side"
-        self.AddToSelfScore(data)
+        action = data['request_action']
+        if action == LANDED_SUCCESSFULLY:
+            self.AddToSelfScore(data)
+    
         
 
 class LunarLanderServer(Server):
@@ -102,10 +107,18 @@ class LunarLanderServer(Server):
             self.Pump()
             sleep(0.0001)
             
-    def getPlayerScore(self, pInfo):
-        return pInfo.score
     
-    
+    def getLeaderboard(self):
+        leaderboard =[]
+        PlayerInfo = namedtuple('PlayerInfo','name score')
+        
+        for p in self.players:
+            row = PlayerInfo(name=p.id, score=p.score)
+            leaderboard.append(row)
+        leaderboard.sort(key=self.getPlayerScore,reverse=True)
+        print (self.leaderboardToString(self,leaderboard))
+        data = self.leaderboardToString(self,leaderboard)
+        return data
     
 
 # get command line argument of server, port

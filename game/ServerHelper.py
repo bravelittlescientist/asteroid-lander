@@ -1,20 +1,11 @@
 ''' contains helper functions for server'''
 from collections import namedtuple
 
-def getLeaderboard(self):
-    leaderboard =[]
-    PlayerInfo = namedtuple('PlayerInfo','name score')
-    
-    for p in self.players:
-        row = PlayerInfo(name=p.id, score=p.score)
-        leaderboard.append(row)
-    leaderboard.sort(key=self.getPlayerScore,reverse=True)
-    print (self.leaderboardToString(leaderboard))
-    data = self.leaderboardToString(leaderboard)
-    return data
+
     
     
-    
+def getPlayerScore(self, pInfo):
+    return pInfo.score
     
 def playerInfoToString(self, pInfo):
     return str(pInfo.name) +"  :  " + str(pInfo.score)
