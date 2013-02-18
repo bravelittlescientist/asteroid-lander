@@ -37,10 +37,24 @@ class ServerChannel(Channel):
         self.score += data['points_scored']
         # generate the new leaderboard information
         new_data ={}
-        new_data.update({"print_leaderboard": self._server.getLeaderboard()})
-        new_data.update({"response_action":"print_leaderboard"})
+        new_data.update({PRINT_LEADERBOARD: self._server.getLeaderboard()})
+        new_data.update({"response_action":PRINT_LEADERBOARD})
         #send this new information to all clients, they will just print this on their screens
-        self.PassOn(new_data);
+        self.PassOn(new_data)
+    
+    def BuyFuel(self, data):
+        return_data = {}
+        if self._server.canBuyFuel():
+            #buy fuel now
+            return_data.update({BASE_STATION_FUEL_UPDATED: self._server.buyFuel()})
+            return_data.update({"response_action" : BASE_STATION_FUEL_UPDATED})
+            return_data.update({NOTIFICATION: "Player " + str(self.id)+ " bought fuel"})
+            self.PassOn(return_data)
+        else:
+            return_data.update({FUEL_REQUEST_DENIED: "not enough gold to buy fuel"})
+            return_data.update({"response_action" : FUEL_REQUEST_DENIED})
+            self.send(return_data)
+            
     
     ##################################
     ### Network specific callbacks ###
@@ -63,7 +77,7 @@ class ServerChannel(Channel):
         if action == LANDED_SUCCESSFULLY:
             self.AddToSelfScore(data)
         elif action == BUY_FUEL:
-            pass
+            self.BuyFuel(data)
         elif action == RETURN_TO_EARTH:
             pass
         elif action == CRASH_LANDED:
@@ -127,6 +141,10 @@ class LunarLanderServer(Server):
         print (self.leaderboardToString(self,leaderboard))
         data = self.leaderboardToString(self,leaderboard)
         return data
+    
+    def canBuyFuel(self):
+        
+        return False
     
 
 # get command line argument of server, port

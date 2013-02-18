@@ -21,5 +21,7 @@ GAME_GOAL_ACHIEVED = "game_goal_achieved"
 GAME_OVER_FOR_CLIENT = "game_over_for_client"
 GAME_OVER_ALL = "game_over_all"
 UPDATE_PLOT_GRID = "mining_grid_changed"
+FUEL_REQUEST_DENIED = "fuel_request_denied"
+NOTIFICATION = "notification"
 
 
