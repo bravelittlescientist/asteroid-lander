@@ -57,11 +57,21 @@ class ServerChannel(Channel):
         self.lines[-1].append(data['point'])
         self.PassOn(data)
     
-    def Networ(self, data):
+    def Network(self, data):
         print "event listed at server side"
         action = data['request_action']
         if action == LANDED_SUCCESSFULLY:
             self.AddToSelfScore(data)
+        elif action == BUY_FUEL:
+            pass
+        elif action == RETURN_TO_EARTH:
+            pass
+        elif action == CRASH_LANDED:
+            pass
+        elif action == REQUEST_PLOT:
+            pass
+        elif action == QUIT_GAME:
+            pass
     
         
 
