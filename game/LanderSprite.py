@@ -19,19 +19,14 @@ class LanderSprite(Sprite):
     def update(self):
         #pos = pygame.mouse.get_pos()
         #self.rect.midtop = pos
-        pass
+        self.rect.centerx += self.velocityx
+        self.rect.centery += self.velocityy
     
-    def move_left(self):
-        self.rect.centerx -= 20
+    def set_x_velocity(self, xv):
+        self.velocityx += xv
 
-    def move_right(self):
-        self.rect.centerx += 20
-    
-    def move_up(self):
-        self.rect.centery -= 20
-
-    def move_down(self):
-        self.rect.centery += 20
+    def set_y_velocity(self, yv):
+        self.velocityy += yv
 
 pygame.init()
 screen = pygame.display.set_mode((640, 640))
@@ -44,16 +39,30 @@ background.fill((0, 0, 0))
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: sys.exit()
+        
+        # On Keypress, set movement speed.
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                lander.move_left()
+                lander.set_x_velocity(-1)
             elif event.key == pygame.K_RIGHT:
-                lander.move_right()
+                lander.set_x_velocity(1)
             elif event.key == pygame.K_UP:
-                lander.move_up()
+                lander.set_y_velocity(-1)
             elif event.key == pygame.K_DOWN:
-                lander.move_down()
-    
+                lander.set_y_velocity(1)
+
+        # On Keyrelease, set movement speed opposite
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT:
+                lander.set_x_velocity(1)
+            elif event.key == pygame.K_RIGHT:
+                lander.set_x_velocity(-1)
+            elif event.key == pygame.K_UP:
+                lander.set_y_velocity(1)
+            elif event.key == pygame.K_DOWN:
+                lander.set_y_velocity(-1)
+
+    lander.update()
     screen.blit(background, (0, 0))
     screen.blit(lander.image, lander.rect)
     pygame.display.flip()
