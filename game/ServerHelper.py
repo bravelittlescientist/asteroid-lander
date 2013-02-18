@@ -4,10 +4,10 @@ from collections import namedtuple
 
     
     
-def getPlayerScore(self, pInfo):
+def getPlayerScore(pInfo):
     return pInfo.score
     
-def playerInfoToString(self, pInfo):
+def playerInfoToString(pInfo):
     return str(pInfo.name) +"  :  " + str(pInfo.score)
 
 def leaderboardToString(self, leaderboard):
