@@ -52,6 +52,9 @@ class BaseStationModel(object):
     
     def assignPlot(self,type):
         self.mineGrid[type] = self.mineGrid[type]-1
+        
+    def freePlot(self,type):
+        self.mineGrid[type] = self.mineGrid[type]+1
     
     def canAssignPlot(self,type):
         if self.mineGrid[type]<1:

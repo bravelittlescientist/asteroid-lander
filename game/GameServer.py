@@ -198,13 +198,16 @@ class LunarLanderServer(Server):
     
     def canAssignPlot(self,data):
         return self.baseStation.canAssignPlot(data['plot_type'])
+    
     def getPlot(self,data):
         self.baseStation.assignPlot(data['plot_type'])
         return self.getGridStatus()
     
+    def freePlot(self,data):
+        return self.baseStation.freePlot(data['plot_type'])
+        
     def conquerPlot(self,data):
         return self.baseStation.conquerPlot(data)
-        
 
 # get command line argument of server, port
 if len(sys.argv) != 2:
