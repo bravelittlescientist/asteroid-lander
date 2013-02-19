@@ -8,6 +8,8 @@ from PodSixNet.Channel import Channel
 import ServerHelper
 from game.Constants import *
 from collections import namedtuple
+from game import BaseStationModel
+from game import GameRule
 
 class ServerChannel(Channel):
     """
@@ -23,6 +25,7 @@ class ServerChannel(Channel):
         self.color = [(intid + 1) % 3 * 84, (intid + 2) % 3 * 84, (intid + 3) % 3 * 84] #tuple([randint(0, 127) for r in range(3)])
         self.lines = []
         self.score = 0;
+        self.assignedPlot = 0 
     
     def PassOn(self, data):
         # pass on what we received to all connected clients
@@ -36,12 +39,61 @@ class ServerChannel(Channel):
         # add to the score of this client.
         self.score += data['points_scored']
         # generate the new leaderboard information
+        
+        if self.assignedPlot !=0:
+            self._server.conquerPlot(self.assignedPlot)
+            self.assignedPlot = 0
+            self.NotifyGridStatus()
+            #TODO: if we are changing the gameScore as well, then after doing that call NotifyGameScore
         new_data ={}
-        new_data.update({"print_leaderboard": self._server.getLeaderboard()})
-        new_data.update({"response_action":"print_leaderboard"})
+        new_data.update({PRINT_LEADERBOARD: self._server.getLeaderboard()})
+        new_data.update({"response_action":PRINT_LEADERBOARD})
+        new_data.update({NOTIFICATION: "HURRAY!!! Player " + str(self.id)+ " has conqured a "+ data['plot_type']+" plot"})
         #send this new information to all clients, they will just print this on their screens
-        self.PassOn(new_data);
+        self.PassOn(new_data)
     
+    def BuyFuel(self, data):
+        return_data = {}
+        canBuyFuel = self._server.canBuyFuel()
+        if canBuyFuel[0]:
+            #buy fuel now
+            return_data.update({BASE_STATION_FUEL_UPDATED: self._server.buyFuel()})
+            return_data.update({"response_action" : BASE_STATION_FUEL_UPDATED})
+            return_data.update({NOTIFICATION: "Player " + str(self.id)+ " bought fuel"})
+            self.PassOn(return_data)
+            self.NotifyGameScore()
+        else:
+            return_data.update({FUEL_REQUEST_DENIED: canBuyFuel[1]})
+            return_data.update({"response_action" : FUEL_REQUEST_DENIED})
+            self.send(return_data)
+    
+    def AssignPlot(self,data):
+        return_data = {}
+        canAssignPlot = self._server.canAssignPlot(data)
+        if canAssignPlot[0]:
+            #buy fuel now
+            return_data.update({REQUEST_PLOT_APPROVED: self._server.getPlot(data)})
+            return_data.update({"response_action" : REQUEST_PLOT_APPROVED})
+            return_data.update({NOTIFICATION: "Player " + str(self.id)+ " has been assigned a "+ data['plot_type']+" plot" })
+            self.assignedPlot = data['plot_type']
+            self.PassOn(return_data)
+            self.NotifyGridStatus()
+        else:
+            return_data.update({REQUEST_PLOT_DENIED: canAssignPlot[1]})
+            return_data.update({"response_action" : REQUEST_PLOT_DENIED})
+            self.send(return_data)
+            
+    def NotifyGameScore(self):
+        return_data ={}
+        return_data.update({UPDATE_GAME_SCORE:self._server.getGameScore()})
+        return_data.update({"response_action":UPDATE_GAME_SCORE})
+        self.PassOn(return_data)
+    
+    def NotifyGridStatus(self):
+        return_data ={}
+        return_data.update({UPDATE_GRID_STATUS:self._server.getGridStatus()})
+        return_data.update({"response_action":UPDATE_GRID_STATUS})
+        self.PassOn(return_data)
     ##################################
     ### Network specific callbacks ###
     ##################################
@@ -63,7 +115,7 @@ class ServerChannel(Channel):
         if action == LANDED_SUCCESSFULLY:
             self.AddToSelfScore(data)
         elif action == BUY_FUEL:
-            pass
+            self.BuyFuel(data)
         elif action == RETURN_TO_EARTH:
             pass
         elif action == CRASH_LANDED:
@@ -82,6 +134,9 @@ class LunarLanderServer(Server):
         self.id = 0
         Server.__init__(self, *args, **kwargs)
         self.players = WeakKeyDictionary()
+        self.baseStation = BaseStationModel()
+        self.gameRule = GameRule()
+        
         print 'Server launched'
     
     def NextId(self):
@@ -128,6 +183,28 @@ class LunarLanderServer(Server):
         data = self.leaderboardToString(self,leaderboard)
         return data
     
+    def canBuyFuel(self):
+        return self.baseStation.canBuyFuel()
+    
+    def buyFuel(self):
+        self.baseStation.buyFuel()
+        return self.baseStation.fuel
+    
+    def getGameScore(self):
+        return self.baseStation.gameScore
+    
+    def getGridStatus(self):
+        return self.baseStation.mineGrid
+    
+    def canAssignPlot(self,data):
+        return self.baseStation.canAssignPlot(data['plot_type'])
+    def getPlot(self,data):
+        self.baseStation.assignPlot(data['plot_type'])
+        return self.getGridStatus()
+    
+    def conquerPlot(self,data):
+        return self.baseStation.conquerPlot(data)
+        
 
 # get command line argument of server, port
 if len(sys.argv) != 2:
