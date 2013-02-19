@@ -24,19 +24,33 @@ class Lander:
 			if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == 27):
 				exit()
 			
-			if event.type == pygame.MOUSEBUTTONDOWN:
+			elif event.type == pygame.MOUSEBUTTONDOWN:
 				self.down = True
 				self.PenDown(event)
 			
-			if event.type == pygame.MOUSEMOTION and self.down:
+			elif event.type == pygame.MOUSEMOTION and self.down:
 				self.PenMove(event)
 			
-			if event.type == pygame.MOUSEBUTTONUP:
+			elif event.type == pygame.MOUSEBUTTONUP:
 				self.down = False
 				self.PenUp(event)
-			if event.type == pygame.KEYDOWN:
+				
+			elif event.type == pygame.K_l:
 				self.LandedSafely(12)
 	
+			elif event.type == pygame.K_c:
+				self.CrashLanded()
+
+			elif event.type == pygame.K_b:
+				self.BuyFuel();
+
+			elif event.type == pygame.K_r:
+				self.RequestPlot();
+
+			elif event.type == pygame.K_q:
+				self.Quit();
+
+
 	def Hey(self):
 		#print "itna to chal"
 		self.HelloWorld()
