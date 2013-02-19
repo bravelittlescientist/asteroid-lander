@@ -1,4 +1,4 @@
-asteroid-lander
+asteroid-landerr
 ===============
 
 Multiplayer, asteroid-mining themed game inspired by the classic Lunar Lander video game.
