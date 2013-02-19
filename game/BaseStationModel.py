@@ -62,5 +62,3 @@ class BaseStationModel(object):
         if self.conqueredPlot[type]< self.gameRule.maxPlotCount[type]:
             self.conquredPlot[type] = self.conquredPlot[type]+1
             #TODO: add other things here like what happens when a plot gets conqured.
-    
-        

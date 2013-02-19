@@ -22,11 +22,11 @@ GAME_OVER_FOR_CLIENT = "game_over_for_client"
 GAME_OVER_ALL = "game_over_all"
 UPDATE_PLOT_GRID = "mining_grid_changed"
 FUEL_REQUEST_DENIED = "fuel_request_denied"
-NOTIFICATION = "notification"
 UPDATE_GRID_STATUS = "update_grid_status"
 
 
 # others
+NOTIFICATION = "notification"
 MAX_FUEL_BASE_STATION = 100
 GOLD_PLOT_TOTAL = 10
 COPPER_PLOT_TOTAL = 15
@@ -36,5 +36,10 @@ COPPER = "copper"
 IRON = "iron"
 BUY_RATE = 5
 FUEL_EXCHANGE = 10 # this much units of fuel will be bought per transaction
+GOLD_MINE_LIMIT = 5
+COPPER_MINE_LIMIT = 10
+IRON_MINE_UNIT = 15
+SPACESHIP_OWN_MASS = 50
+SPACESHIP_CARGO_CAPACITY = 100
 
 
