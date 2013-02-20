@@ -28,15 +28,6 @@ class Client(ConnectionListener, Lander):
         data.append({"action": "request"})
         connection.send(data)
 
-    def PenDown(self, e):
-        connection.Send({"action": "startline", "point": e.pos})
-    
-    def PenMove(self, e):
-        connection.Send({"action": "drawpoint", "point": e.pos})
-    
-    def PenUp(self, e):
-        connection.Send({"action": "drawpoint", "point": e.pos})
-    
     def LandedSafely(self, info):
         print "event key down captured"
         self.fireRequest({"request_action":LANDED_SUCCESSFULLY, "points_scored": info})
@@ -104,7 +95,7 @@ class Client(ConnectionListener, Lander):
     
     def Network(self, data):
         pass
-        
+
     def Network_connected(self, data):
         self.statusLabel = "connected"
     

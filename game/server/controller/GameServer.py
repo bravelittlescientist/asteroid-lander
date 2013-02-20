@@ -108,7 +108,10 @@ class ServerChannel(Channel):
     
     def ReturnToEarth(self, data):
         '''
-        a) check if gaol was accomplished.
+        a) update game score with the minerals collected by the spaceship
+        b) check if goal was accomplished.
+        c) try to refuel spaceship
+        d) notify all players about changes in the Base Station fuel level and Game Score
         '''      
         self.spaceship.minerals[GOLD] = 0
         self.spaceship.minerals[IRON] = 0
@@ -196,11 +199,11 @@ class ServerChannel(Channel):
             elif action == RETURN_TO_EARTH:
                 self.ReturnToEarth(data)
             elif action == CRASH_LANDED:
-                pass
+                self.ProcessCrash(data)
             elif action == REQUEST_PLOT:
-                pass
+                self.AssignPlot(data)
             elif action == QUIT_GAME:
-                pass
+                self.Quit(data)
 
 class LunarLanderServer(Server):
     channelClass = ServerChannel
