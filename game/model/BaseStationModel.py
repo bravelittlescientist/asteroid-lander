@@ -11,7 +11,7 @@ class BaseStationModel(object):
     '''
     
 
-    def __init__(self, selfparams):
+    def __init__(self):
         '''
         Constructor
         '''
