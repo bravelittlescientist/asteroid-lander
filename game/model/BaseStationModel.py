@@ -22,7 +22,7 @@ class BaseStationModel(object):
         self.mineGrid = {GOLD:GOLD_PLOT_TOTAL,
                           COPPER:COPPER_PLOT_TOTAL,
                           IRON:IRON_PLOT_TOTAL}
-        self.conquredPlot = {GOLD:0,
+        self.conqueredPlot = {GOLD:0,
                           COPPER:0,
                           IRON:0}
         
@@ -32,5 +32,8 @@ class BaseStationModel(object):
     def setMineGrid(self, i,value):
         self.mineGrid[i] = value
         
-    def setfuel(self, value):
+    def setFuel(self, value):
         self.fuel= value
+        
+    def getFuel(self):
+        return self.fuel

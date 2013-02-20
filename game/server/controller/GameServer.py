@@ -49,7 +49,7 @@ class ServerChannel(Channel):
             self.spaceship.assignedPlot = 0
             self.SendGridStatus()
         self.SendLeaderBoard()
-        self.SendNotification("HURRAY!!! Player " + str(self.id)+ " has conqured a "+ data['plot_type']+" plot")
+        self.SendNotification("HURRAY!!! Player " + str(self.id)+ " has conquered a "+ data['plot_type']+" plot")
     
     def BuyFuel(self, data):
         return_data = {}
@@ -104,8 +104,53 @@ class ServerChannel(Channel):
     
     def ReturnToEarth(self, data):
         '''
-        a) check if the spaceship has any mineral.
+        a) check if gaol was accomplished.
+        '''      
+        self.spaceship.minerals[GOLD] = 0
+        self.spaceship.minerals[IRON] = 0
+        self.spaceship.minerals[COPPER] = 0
+        
+        self._server.updateGameScore(data)
+        
+        if self._server.checkGoalAccomplished():
+           self.SendNotification("Mission Accomplished! Congratulations!")
+           new_data ={}
+           new_data.update({"response_action":GAME_GOAL_ACHIEVED})
+           self.PassOn(new_data)
+        elif self._server.canRefuelSpaceship(data):
+            fuelAvailable = self._server.withdrawFuel(data)
+            self.spaceship.fuelLevel +=fuelAvailable
+            new_data = {}
+            new_data.update({BASE_STATION_FUEL_UPDATED: self._server.getBaseStationFuelLevel()})
+            new_data.update({"response_action" : BASE_STATION_FUEL_UPDATED})
+            self.PassOn(new_data)
+            self.SendNotification("Player " + str(self.id)+ " was refueled at Base Station")
+        else:
+            #No fuel left, game over for this player
+            self.active = False
+            self._server.subtractPlayer() 
+            new_data ={}
+            new_data.update({"response_action":GAME_OVER_FOR_CLIENT})
+            #send this new information to all clients, they will just print this on their screens
+            self.send(new_data);
+            self.SendNotification("Player "+self.id+" could no refuel at Base Station :( ")
+
+        
+    def Quit(self,data):
         '''
+        A player has quit 
+        '''
+        # subtracts one player from the game and set the player as inactive
+        self.active = False
+        self._server.subtractPlayer() 
+        new_data ={}
+        new_data.update({"response_action":GAME_OVER_FOR_CLIENT})
+        #send this new information to all clients, they will just print this on their screens
+        self.send(new_data);
+        self.SendNotification("Player "+self.id+" quit :( ")
+        self._server.freePlot(data)
+        self.SendGridStatus()
+        
     def SendLeaderBoard(self):
         new_data ={}
         new_data.update({PRINT_LEADERBOARD: self._server.getLeaderboard()})
@@ -156,11 +201,11 @@ class ServerChannel(Channel):
         elif action == RETURN_TO_EARTH:
             self.ReturnToEarth(data)
         elif action == CRASH_LANDED:
-            pass
+            self.ProcessCrash(data)
         elif action == REQUEST_PLOT:
-            pass
+            self.AssignPlot(data)
         elif action == QUIT_GAME:
-            pass
+            self.Quit(data)
 
 class LunarLanderServer(Server):
     channelClass = ServerChannel
@@ -247,6 +292,25 @@ class LunarLanderServer(Server):
 
     def addPlayer(self):
         self.ActivePlayers= self.ActivePlayers+1
+
+    def updateGameScore(self,data):
+        return self.service.updateGameScore(data)
+
+    def checkGoalAccomplished(self):
+        return self.service.checkGoalAccomplished()
+    
+    def canRefuelSpaceship(self, data):
+        if self.service.getBaseStationFuelLevel()>0:
+            return True
+        else:
+            return False
+            
+    def withdrawFuel(self,data):
+        spaceshipFuelLevel = data[SPACESHIP_FUEL_KEY]
+        return self.service.withdrawFuel(SPACESHIP_FUEL_CAPACITY-spaceshipFuelLevel)
+        
+    def getBaseStationFuelLevel(self):
+        return self.service.getBaseStationFuelLevel()
 
 # get command line argument of server, port
 if len(sys.argv) != 2:

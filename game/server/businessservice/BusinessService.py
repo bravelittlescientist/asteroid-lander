@@ -49,4 +49,28 @@ class BusinessService(object):
     
     def conquerPlot(self,type):
         if self.baseStation.conqueredPlot[type]< self.gameRule.maxPlotCount[type]:
-            self.baseStation.conquredPlot[type] = self.baseStation.conquredPlot[type]+1
+            self.baseStation.conqueredPlot[type] = self.baseStation.conqueredPlot[type]+1
+            
+    def updateGameScore(self,data):
+        self.baseStation.gameScore[GOLD] += data[GOLD]
+        self.baseStation.gameScore[IRON] += data[IRON]
+        self.baseStation.gameScore[COPPER] += data[COPPER]
+        
+    def checkGoalAccomplished(self):
+        if self.baseStation.gameScore[GOLD] >= self.gameRule.gameGoal[GOLD] and self.baseStation.gameScore[IRON] >= self.gameRule.gameGoal[IRON] and  self.baseStation.gameScore[COPPER] >= self.gameRule.gameGoal[COPPER]:
+            return True
+        else: 
+            return False
+    
+    def getBaseStationFuelLevel(self):
+        return self.baseStation.getFuel()
+        
+    def withdrawFuel(self,amountRequested):
+        if self.baseStation.getFuel() > amountRequested:
+            self.baseStation.setFuel(self.baseStation.getFuel()-amountRequested)
+            return amountRequested
+        else:
+            available = amountRequested-self.baseStation.getFuel()
+            self.baseStation.setFuel(0)
+            return available
+        

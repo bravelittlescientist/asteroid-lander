@@ -10,7 +10,8 @@ class SpaceshipModel(object):
     '''
     Keeps all the state variables of the Spaceship
     '''
-
+    fuelCapacity = 100
+    fuelLevel=0
     altitude = 1000
 
     def __init__(self):
@@ -39,4 +40,9 @@ class SpaceshipModel(object):
             used +=self.minerals[key]
         return self.cargoCapacity-used
     
+    def setFuelLevel(self, value):
+        self.fuelLevel = value
+        
+    def getFuelLevel(self): 
+        return self.fuelLevel
     

@@ -7,7 +7,7 @@ LANDED_SUCCESSFULLY = "spaceship_landed"
 CRASH_LANDED = "spaceship_crashed"
 REQUEST_PLOT = "choose_plot_to_land"
 QUIT_GAME = "quit_game"
-
+SPACESHIP_FUEL_KEY = "Spaceship Fuel Level"
 
 # server sends this events to clients
 REQUEST_PLOT_DENIED = "request_plot_denied"
@@ -41,5 +41,5 @@ COPPER_MINE_LIMIT = 10
 IRON_MINE_UNIT = 15
 SPACESHIP_OWN_MASS = 50
 SPACESHIP_CARGO_CAPACITY = 100
-
+SPACESHIP_FUEL_CAPACITY = 100
 
