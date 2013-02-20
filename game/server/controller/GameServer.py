@@ -1,15 +1,15 @@
-import sys
-from time import sleep, localtime
-from random import randint
-from weakref import WeakKeyDictionary
-
-from PodSixNet.Server import Server
 from PodSixNet.Channel import Channel
-import ServerHelper
-from game.Constants import *
+from PodSixNet.Server import Server
 from collections import namedtuple
+from game.Constants import *
 from game.model.SpaceshipModel import SpaceshipModel
 from game.server.businessservice.BusinessService import BusinessService
+from random import randint
+from time import sleep, localtime
+from weakref import WeakKeyDictionary
+import ServerHelper
+import sys
+
 
 class ServerChannel(Channel):
     """
@@ -99,6 +99,9 @@ class ServerChannel(Channel):
         self.send(new_data);
         #Now warn all other players that the player crashed.
         self.SendNotification("Player "+self.id+" crashed")
+        self._server.freePlot(data)
+        self.SendGridStatus()
+    
     def ReturnToEarth(self, data):
         '''
         a) check if the spaceship has any mineral.
@@ -232,6 +235,10 @@ class LunarLanderServer(Server):
         self.service.assignPlot(data['plot_type'])
         return self.getGridStatus()
     
+    def freePlot(self,data):
+        self.service.freePlot(data['plot_type'])
+        return self.getGridStatus()
+    
     def conquerPlot(self,data):
         return self.service.conquerPlot(data)
     
@@ -246,6 +253,7 @@ if len(sys.argv) != 2:
     print "Lunar Lander Usage:", sys.argv[0], "host:port"
     print "e.g.", sys.argv[0], "localhost:31425"
 else:
+    print "hello world"
     host, port = sys.argv[1].split(":")
     s = LunarLanderServer(localaddr=(host, int(port)))
     s.Launch()

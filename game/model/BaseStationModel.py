@@ -3,7 +3,6 @@ Created on 16/02/2013
 
 @author: Christian Adriano
 '''
-from Constants import *
 from game.Constants import *
 class BaseStationModel(object):
     '''

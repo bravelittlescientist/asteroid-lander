@@ -40,7 +40,8 @@ class BusinessService(object):
     
     def assignPlot(self,type):
         self.baseStation.mineGrid[type] = self.baseStation.mineGrid[type]-1
-    
+    def freePlot(self,type):
+        self.baseStation.mineGrid[type] = self.baseStation.mineGrid[type]+1
     def canAssignPlot(self,type):
         if self.baseStation.mineGrid[type]<1:
             return (False, "NO MORE PLOTS AVAILABLE OF THIS TYPE")
