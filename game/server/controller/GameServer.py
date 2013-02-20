@@ -7,7 +7,7 @@ from game.server.businessservice.BusinessService import BusinessService
 from random import randint
 from time import sleep, localtime
 from weakref import WeakKeyDictionary
-import ServerHelper
+from ServerHelper import *
 import sys
 
 
@@ -51,7 +51,7 @@ class ServerChannel(Channel):
             self.spaceship.assignedPlot = 0
             self.SendGridStatus()
         self.SendLeaderBoard()
-        self.SendNotification("HURRAY!!! Player " + str(self.id)+ " has conquered a "+ data['plot_type']+" plot")
+        #self.SendNotification("HURRAY!!! Player " + str(self.id)+ " has conquered a "+ data['plot_type']+" plot")
     
     def BuyFuel(self, data):
         return_data = {}
@@ -115,10 +115,10 @@ class ServerChannel(Channel):
         self._server.updateGameScore(data)
         
         if self._server.checkGoalAccomplished():
-           self.SendNotification("Mission Accomplished! Congratulations!")
-           new_data ={}
-           new_data.update({"response_action":GAME_GOAL_ACHIEVED})
-           self.PassOn(new_data)
+            self.SendNotification("Mission Accomplished! Congratulations!")
+            new_data ={}
+            new_data.update({"response_action":GAME_GOAL_ACHIEVED})
+            self.PassOn(new_data)
         elif self._server.canRefuelSpaceship(data):
             fuelAvailable = self._server.withdrawFuel(data)
             self.spaceship.fuelLevel +=fuelAvailable
@@ -197,6 +197,23 @@ class ServerChannel(Channel):
             elif action == QUIT_GAME:
                 pass
 
+    def Network_request(self, data):
+        print "inside request action event listed at server side"
+        if 'request_action' in data:
+            action = data['request_action']
+            if action == LANDED_SUCCESSFULLY:
+                self.HandleSuccessLanding(data)
+            elif action == BUY_FUEL:
+                self.BuyFuel(data)
+            elif action == RETURN_TO_EARTH:
+                self.ReturnToEarth(data)
+            elif action == CRASH_LANDED:
+                pass
+            elif action == REQUEST_PLOT:
+                pass
+            elif action == QUIT_GAME:
+                pass
+
 class LunarLanderServer(Server):
     channelClass = ServerChannel
     ActivePlayers = 0
@@ -254,17 +271,16 @@ class LunarLanderServer(Server):
         while True:
             self.Pump()
             sleep(0.0001)
-
     def getLeaderboard(self):
         leaderboard = []
         PlayerInfo = namedtuple('PlayerInfo', 'name score')
         
         for p in self.players:
-            row = PlayerInfo(name=p.id, score=p.score)
+            row = PlayerInfo(name=p.id, score=p.spaceship.score)
             leaderboard.append(row)
         leaderboard.sort(key=self.getPlayerScore, reverse=True)
-        print (self.leaderboardToString(self, leaderboard))
-        data = self.leaderboardToString(self, leaderboard)
+        print (self.leaderboardToString(leaderboard))
+        data = self.leaderboardToString(leaderboard)
         return data
     
     def canBuyFuel(self):
@@ -310,7 +326,20 @@ class LunarLanderServer(Server):
             return True
         else:
             return False
-            
+    def getPlayerScore(self, pInfo):
+        return pInfo.score
+    
+    def playerInfoToString(self,pInfo):
+        return str(pInfo.name) + "  :  " + str(pInfo.score)
+    
+    def leaderboardToString(self, leaderboard):
+        returnString = "player  :   score"
+        returnString += "*"*10
+        for pInfo in leaderboard:
+            returnString += "\n" + self.playerInfoToString(pInfo)
+        returnString += "\n" + "*"*10
+        return returnString
+
     def withdrawFuel(self,data):
         spaceshipFuelLevel = data[SPACESHIP_FUEL_KEY]
         return self.service.withdrawFuel(SPACESHIP_FUEL_CAPACITY-spaceshipFuelLevel)
