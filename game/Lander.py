@@ -22,18 +22,24 @@ class Lander:
 
     def Events(self):
         for event in pygame.event.get():
-            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == 27):
+            if event.type == pygame.QUIT:
                 exit()
-            elif event.type == pygame.K_l:
-                self.LandedSafely(12)
-            elif event.type == pygame.K_c:
-                self.CrashLanded()
-            elif event.type == pygame.K_b:
-                self.BuyFuel();
-            elif event.type == pygame.K_r:
-                self.RequestPlot();
-            elif event.type == pygame.K_q:
-                self.Quit();
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_l:
+                    print "L is pressed"
+                    self.LandedSafely(12)
+                elif event.key == pygame.K_c:
+                    self.CrashLanded()
+                elif event.key == pygame.K_b:
+                    self.BuyFuel();
+                elif event.key == pygame.K_r:
+                    self.RequestPlot();
+                elif event.key == pygame.K_q:
+                    self.Quit();
+                else:
+                    pass
+            else:
+                pass
 
     def Hey(self):
         #print "itna to chal"

@@ -41,6 +41,7 @@ class ServerChannel(Channel):
         f) notify to update leaderboard
         g) notify the grid status
         '''
+        print "inside HandleSucessLanding"
         # add to the score of this client.
         self.spaceship.score += data['points_scored']
         # generate the new leaderboard information
