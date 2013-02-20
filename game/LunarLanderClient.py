@@ -25,7 +25,7 @@ class Client(ConnectionListener, Lander):
         #def PenDraw(self, e):
         #	connection.Send({"action": "draw", "point": e.pos})
     def fireRequest(self, data):
-        data.append({"action": "request"})
+        data.update({"action": "request"})
         connection.send(data)
 
     def LandedSafely(self, info):
