@@ -26,10 +26,10 @@ class BaseStationModel(object):
                           COPPER:0,
                           IRON:0}
         
-    def setgameScore(self, i,value):
+    def setgameScore(self, i, value):
         self.gameScore[i] = value
     
-    def setMineGrid(self, i,value):
+    def setMineGrid(self, i, value):
         self.mineGrid[i] = value
         
     def setFuel(self, value):
@@ -37,3 +37,4 @@ class BaseStationModel(object):
         
     def getFuel(self):
         return self.fuel
+

@@ -27,25 +27,25 @@ class BusinessService(object):
         return self.baseStation.mineGrid
     
     def buyFuel(self):
-        self.baseStation.gameScore[GOLD] = self.baseStation.gameScore[GOLD]-self.gameRule.buyRate
-        self.baseStation.fuel = min(MAX_FUEL_BASE_STATION, self.baseStation.fuel+self.gameRule.fuelPerExchangeUnit)
+        self.baseStation.gameScore[GOLD] = self.baseStation.gameScore[GOLD] - self.gameRule.buyRate
+        self.baseStation.fuel = min(MAX_FUEL_BASE_STATION, self.baseStation.fuel + self.gameRule.fuelPerExchangeUnit)
         return self.baseStation.fuel
     
     def canBuyFuel(self):
         if self.baseStation.fuel == MAX_FUEL_BASE_STATION:
-            return (False, "BASE STATION FUEL TANK ALREADY AT MAX CAPACITY" )
-        if self.baseStation.gameScore[GOLD]>= self.gameRule.buyRate:
+            return (False, "BASE STATION FUEL TANK ALREADY AT MAX CAPACITY")
+        if self.baseStation.gameScore[GOLD] >= self.gameRule.buyRate:
             return (False, "NOT ENOUGH GOLD TO BUY FUEL")
-        return ((self.baseStation.fuel < MAX_FUEL_BASE_STATION) and (self.baseStation.gameScore[GOLD]>= self.gameRule.buyRate),"SUCCESS")
+        return ((self.baseStation.fuel < MAX_FUEL_BASE_STATION) and (self.baseStation.gameScore[GOLD] >= self.gameRule.buyRate), "SUCCESS")
     
-    def assignPlot(self,type):
-        self.baseStation.mineGrid[type] = self.baseStation.mineGrid[type]-1
-    def freePlot(self,type):
-        self.baseStation.mineGrid[type] = self.baseStation.mineGrid[type]+1
-    def canAssignPlot(self,type):
-        if self.baseStation.mineGrid[type]<1:
+    def assignPlot(self, type):
+        self.baseStation.mineGrid[type] = self.baseStation.mineGrid[type] - 1
+    def freePlot(self, type):
+        self.baseStation.mineGrid[type] = self.baseStation.mineGrid[type] + 1
+    def canAssignPlot(self, type):
+        if self.baseStation.mineGrid[type] < 1:
             return (False, "NO MORE PLOTS AVAILABLE OF THIS TYPE")
-        return (True,"SUCCESS")
+        return (True, "SUCCESS")
     
     def conquerPlot(self,type):
         if self.baseStation.conqueredPlot[type]< self.gameRule.maxPlotCount[type]:

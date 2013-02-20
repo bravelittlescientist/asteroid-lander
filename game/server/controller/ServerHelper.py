@@ -8,12 +8,12 @@ def getPlayerScore(pInfo):
     return pInfo.score
     
 def playerInfoToString(pInfo):
-    return str(pInfo.name) +"  :  " + str(pInfo.score)
+    return str(pInfo.name) + "  :  " + str(pInfo.score)
 
 def leaderboardToString(self, leaderboard):
     returnString = "player  :   score"
     returnString += "*"*10
     for pInfo in leaderboard:
         returnString += "\n" + self.playerInfoToString(pInfo)
-    returnString += "\n"+ "*"*10
+    returnString += "\n" + "*"*10
     return returnString
