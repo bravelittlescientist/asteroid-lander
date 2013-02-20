@@ -1,6 +1,7 @@
-from sys import exit
+from game.Constants import *
 from os import environ
-import pygame 
+from sys import exit
+import pygame
 
 SCREENSIZE = (640, 480)
 
@@ -33,7 +34,7 @@ class Lander:
                 elif event.key == pygame.K_b:
                     self.BuyFuel();
                 elif event.key == pygame.K_r:
-                    self.RequestPlot();
+                    self.RequestPlot(GOLD);
                 elif event.key == pygame.K_q:
                     self.Quit();
                 else:

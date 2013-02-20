@@ -45,13 +45,12 @@ class ServerChannel(Channel):
         # add to the score of this client.
         self.spaceship.score += data['points_scored']
         # generate the new leaderboard information
-        
         if self.spaceship.assignedPlot != 0:
             self._server.conquerPlot(self.spaceship.assignedPlot)
             self.spaceship.assignedPlot = 0
             self.SendGridStatus()
-        self.SendLeaderBoard()
-        #self.SendNotification("HURRAY!!! Player " + str(self.id)+ " has conquered a "+ data['plot_type']+" plot")
+            self.SendLeaderBoard()
+            self.SendNotification("HURRAY!!! Player " + str(self.id)+ " has conquered a "+ data['plot_type']+" plot")
     
     def BuyFuel(self, data):
         return_data = self.GetReturnData()
@@ -184,21 +183,7 @@ class ServerChannel(Channel):
     ### Network specific callbacks ###
     ##################################
     def Network(self, data):
-        print "event listed at server side"
-        if 'request_action' in data:
-            action = data['request_action']
-            if action == LANDED_SUCCESSFULLY:
-                self.HandleSuccessLanding(data)
-            elif action == BUY_FUEL:
-                self.BuyFuel(data)
-            elif action == RETURN_TO_EARTH:
-                self.ReturnToEarth(data)
-            elif action == CRASH_LANDED:
-                pass
-            elif action == REQUEST_PLOT:
-                pass
-            elif action == QUIT_GAME:
-                pass
+        pass
 
     def Network_request(self, data):
         print "inside request action event listed at server side"
