@@ -19,14 +19,16 @@ class Client(ConnectionListener, Lander):
         if "connecting" in self.statusLabel:
             self.statusLabel = "connecting" + ("." * ((self.frame / 30) % 4))
         
-        #######################	
+        #######################    
         ### Event callbacks ###
         #######################
         #def PenDraw(self, e):
-        #	connection.Send({"action": "draw", "point": e.pos})
+        #    connection.Send({"action": "draw", "point": e.pos})
     def fireRequest(self, data):
+        print "before: ", data
         data.update({"action": "request"})
-        connection.send(data)
+        print "after:", data
+        connection.Send(data)
 
     def LandedSafely(self, info):
         print "event key down captured"
@@ -38,10 +40,10 @@ class Client(ConnectionListener, Lander):
     
     def BuyFuel(self, info):
         print "event key b captured"
-        self.fireRequest({"request_action":BUY_FUEL, "buy_fuel": info})	
+        self.fireRequest({"request_action":BUY_FUEL, "buy_fuel": info})    
     
     def RequestPlot(self, info):
-        print "event key r captured"
+        print "event key r captured", info
         self.fireRequest({"request_action":REQUEST_PLOT, "plot_type": info})
     
     def QuitGame(self, info):
@@ -81,15 +83,15 @@ class Client(ConnectionListener, Lander):
             elif action == UPDATE_GAME_SCORE:
                 print action + ':'
                 gameScore = data[action]
-                print GOLD + ' = ' + gameScore[GOLD]
-                print IRON + ' = ' + gameScore[IRON]
-                print COPPER + ' = ' + gameScore[COPPER]
+                print GOLD + ' = ', gameScore[GOLD]
+                print IRON + ' = ', gameScore[IRON]
+                print COPPER + ' = ', gameScore[COPPER]
             elif action == UPDATE_GRID_STATUS:
                 print action + ':'
                 miningGrid = data[action]
-                print GOLD + ' = ' + miningGrid[GOLD]
-                print IRON + ' = ' + miningGrid[IRON]
-                print COPPER + ' = ' + miningGrid[COPPER]
+                print GOLD + ' = ',miningGrid[GOLD]
+                print IRON + ' = ',miningGrid[IRON]
+                print COPPER + ' = ', miningGrid[COPPER]
         else:
             print "data received: ", data    
     
