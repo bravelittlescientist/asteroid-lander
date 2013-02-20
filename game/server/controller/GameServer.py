@@ -54,7 +54,7 @@ class ServerChannel(Channel):
         #self.SendNotification("HURRAY!!! Player " + str(self.id)+ " has conquered a "+ data['plot_type']+" plot")
     
     def BuyFuel(self, data):
-        return_data = {}
+        return_data = self.GetReturnData()
         canBuyFuel = self._server.canBuyFuel()
         if canBuyFuel[0]:
             #buy fuel now
@@ -69,11 +69,14 @@ class ServerChannel(Channel):
             return_data.update({"response_action" : FUEL_REQUEST_DENIED})
             self.send(return_data)
     
+    def GetReturnData(self):
+        return {"action":"response"}
+    
     def AssignPlot(self, data):
         '''
         checks if a plot of plot type is  available and if yes, then assign it. 
         '''
-        return_data = {}
+        return_data = self.GetReturnData()
         canAssignPlot = self._server.canAssignPlot(data)
         if canAssignPlot[0]:
             #assign plot now
@@ -95,7 +98,7 @@ class ServerChannel(Channel):
         # subtracts one player from the game and set the player as inactive
         self.active = False
         self._server.subtractPlayer() 
-        new_data = {}
+        new_data = self.GetReturnData()
         new_data.update({"response_action":GAME_OVER_FOR_CLIENT})
         #send this new information to all clients, they will just print this on their screens
         self.send(new_data);
@@ -116,13 +119,13 @@ class ServerChannel(Channel):
         
         if self._server.checkGoalAccomplished():
             self.SendNotification("Mission Accomplished! Congratulations!")
-            new_data ={}
+            new_data =self.GetReturnData()
             new_data.update({"response_action":GAME_GOAL_ACHIEVED})
             self.PassOn(new_data)
         elif self._server.canRefuelSpaceship(data):
             fuelAvailable = self._server.withdrawFuel(data)
             self.spaceship.fuelLevel +=fuelAvailable
-            new_data = {}
+            new_data = self.GetReturnData()
             new_data.update({BASE_STATION_FUEL_UPDATED: self._server.getBaseStationFuelLevel()})
             new_data.update({"response_action" : BASE_STATION_FUEL_UPDATED})
             self.PassOn(new_data)
@@ -131,7 +134,7 @@ class ServerChannel(Channel):
             #No fuel left, game over for this player
             self.active = False
             self._server.subtractPlayer() 
-            new_data ={}
+            new_data =self.GetReturnData()
             new_data.update({"response_action":GAME_OVER_FOR_CLIENT})
             #send this new information to all clients, they will just print this on their screens
             self.send(new_data);
@@ -145,7 +148,7 @@ class ServerChannel(Channel):
         # subtracts one player from the game and set the player as inactive
         self.active = False
         self._server.subtractPlayer() 
-        new_data ={}
+        new_data =self.GetReturnData()
         new_data.update({"response_action":GAME_OVER_FOR_CLIENT})
         #send this new information to all clients, they will just print this on their screens
         self.send(new_data);
@@ -154,26 +157,26 @@ class ServerChannel(Channel):
         self.SendGridStatus()
         
     def SendLeaderBoard(self):
-        new_data = {}
+        new_data = self.GetReturnData()
         new_data.update({PRINT_LEADERBOARD: self._server.getLeaderboard()})
         new_data.update({"response_action":PRINT_LEADERBOARD})
         #send this new information to all clients, they will just print this on their screens
         self.PassOn(new_data)
     
     def SendGameScore(self):
-        return_data = {}
+        return_data = self.GetReturnData()
         return_data.update({UPDATE_GAME_SCORE:self._server.getGameScore()})
         return_data.update({"response_action":UPDATE_GAME_SCORE})
         self.PassOn(return_data)
         
     def SendNotification(self, msg):
-        notification_data = {}
+        notification_data = self.GetReturnData()
         notification_data.update({"response_action":NOTIFICATION})
         notification_data.update({NOTIFICATION:msg})
         #send this to all players
         self.PassOn(notification_data);
     def SendGridStatus(self):
-        return_data = {}
+        return_data = self.GetReturnData()
         return_data.update({UPDATE_GRID_STATUS:self._server.getGridStatus()})
         return_data.update({"response_action":UPDATE_GRID_STATUS})
         self.PassOn(return_data)
