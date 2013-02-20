@@ -18,7 +18,7 @@ class SpaceshipModel(object):
         Constructor
         '''
         self.active= True
-        self._server.addPlayer() # update the number of active players
+         # update the number of active players
         self.score = 0;
         self.assignedPlot = 0
         self.mass = SPACESHIP_OWN_MASS
@@ -39,4 +39,5 @@ class SpaceshipModel(object):
             used +=self.minerals[key]
         return self.cargoCapacity-used
     
-    
+    def getSelfStateObj(self):
+        return vars(self)

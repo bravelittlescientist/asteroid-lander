@@ -20,6 +20,7 @@ class ServerChannel(Channel):
         Channel.__init__(self, *args, **kwargs)
         self.id = str(self._server.NextId())
         intid = int(self.id)
+        self._server.addPlayer()
         self.spaceship = SpaceshipModel()
     
     def PassOn(self, data):
@@ -147,7 +148,6 @@ class ServerChannel(Channel):
     
     def Network(self, data):
         print "event listed at server side"
-        self.handler.HandleEvent(data)
         action = data['request_action']
         if action == LANDED_SUCCESSFULLY:
             self.HandleSuccessLanding(data)
@@ -184,8 +184,23 @@ class LunarLanderServer(Server):
         print "New Player" + str(player.addr)
         self.players[player] = True
         # TODO: PLayer creation and data transmission
-        player.Send({"action": "initial", "lines": dict([(p.id, {"color": p.color, "lines": p.lines}) for p in self.players])})
+        print "add player"
+        players = self.GetPLayers()
+        print players
+        print "get player done"
+        print "sending initial"
+        player.Send({"action": "initial", "players": players})
+        print "sent initial, calling sendPLayers()"
         self.SendPlayers()
+
+    def GetPLayers(self):
+        players = []
+        for p in self.players:
+            playerObj = {"id" :p.id,
+                        "spaceship": p.spaceship.getSelfStateObj()
+                        } 
+            players.append(playerObj)
+        return players
     
     def DelPlayer(self, player):
         print "Deleting Player" + str(player.addr)
@@ -194,7 +209,8 @@ class LunarLanderServer(Server):
     
     def SendPlayers(self):
         # TODO: Transmit data to players/clients
-        self.SendToAll({"action": "players", "players": dict([(p.id, p.color) for p in self.players])})
+        players = self.GetPLayers()
+        self.SendToAll({"action": "players", "players": players})
     
     def SendToAll(self, data):
         [p.Send(data) for p in self.players]
