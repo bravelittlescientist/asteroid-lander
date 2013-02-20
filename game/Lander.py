@@ -13,6 +13,7 @@ fnt = pygame.font.SysFont("Arial", 14)
 txtpos = (100, 90)
 
 class Lander:
+
 	def __init__(self):
 		self.statusLabel = "connecting"
 		self.playersLabel = "0 players"

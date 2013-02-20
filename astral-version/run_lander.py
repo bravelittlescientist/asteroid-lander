@@ -11,7 +11,7 @@ class LunarServer(GameServer):
         self.max_players = 2 
         # Draw terrain, initialize home base
 
-     def player_joined(self,player):
+     def player_joined(self, player):
         lander = ServerLunarLander()
         self.objects.add(lander)
         player.owns_object(lander)
@@ -41,28 +41,28 @@ class LunarClient(GameClient):
 class Game(object):
     def __init__(self):
         self.player_number = raw_input("Are you player '1' or player '2'? ")
-        if self.player_number=="1":
+        if self.player_number == "1":
             self.server = LunarServer()
-            self.server.host("127.0.0.1",1111,"podsixnet")
+            self.server.host("127.0.0.1", 1111, "podsixnet")
         else:
             self.server = None
         self.client = LunarClient()
-        self.client.connect("127.0.0.1",1111,"podsixnet")
+        self.client.connect("127.0.0.1", 1111, "podsixnet")
         self.client.announce({})
-        self.screen = pygame.display.set_mode([640,480])
+        self.screen = pygame.display.set_mode([640, 480])
         self.clock = pygame.time.Clock()
         self.running = True
     
     def draw(self):
-        self.screen.fill([0,0,0])
+        self.screen.fill([0, 0, 0])
         for mob in self.client.objects.values(): 
-            if mob.template =="ball":
-                pygame.draw.rect(self.screen,[255,255,255],[[mob.x,mob.y],[mob.width,mob.height]])
+            if mob.template == "ball":
+                pygame.draw.rect(self.screen, [255, 255, 255], [[mob.x, mob.y], [mob.width, mob.height]])
         pygame.display.flip()
     
     def input(self):
         for e in pygame.event.get():
-            if e.type==pygame.QUIT:
+            if e.type == pygame.QUIT:
                 self.running = False
         keys = pygame.key.get_pressed()
         if keys[pygame.K_DOWN]:

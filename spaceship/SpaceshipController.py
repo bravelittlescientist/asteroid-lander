@@ -16,7 +16,7 @@ class SpaceshipController(object):
     
     
 
-    def __init__(self,  selfparams):
+    def __init__(self, selfparams):
         '''
         Constructor
         '''
@@ -32,21 +32,21 @@ class SpaceshipController(object):
         '''
         while self.gameOn:
         
-                if (self.baseStationModel.getAltitude() <=0):
+                if (self.baseStationModel.getAltitude() <= 0):
                     ''''' physicsEngine.calculateImpact ''' 
                 else:
-                    if self.tcpConnector.hasEvent()==True:
+                    if self.tcpConnector.hasEvent() == True:
                         event = self.tcpConnector.getEventName()
                         if event == 0: # game over!, Has to show a window with message
                             self.quit()
                         elif event == 2:
                             self.baseStationModel.setBaseStationFuel(self.tcpConnector.getEventValue(1))
                         elif event == 3:
-                            self.baseStationModel.setscoreBoard(1,self.tcpConnector.getEventValue(1))
-                            self.baseStationModel.setscoreBoard(2,self.tcpConnector.getEventValue(2))
-                            self.baseStationModel.setscoreBoard(3,self.tcpConnector.getEventValue(3))
+                            self.baseStationModel.setscoreBoard(1, self.tcpConnector.getEventValue(1))
+                            self.baseStationModel.setscoreBoard(2, self.tcpConnector.getEventValue(2))
+                            self.baseStationModel.setscoreBoard(3, self.tcpConnector.getEventValue(3))
                         elif event == 4:
-                            self.baseStationFuel.setminingGrid(1,self.tcpConnector.getEventValue(1))
-                            self.baseStationFuel.setminingGrid(2,self.tcpConnector.getEventValue(2))
-                            self.baseStationFuel.setminingGrid(3,self.tcpConnector.getEventValue(3))
+                            self.baseStationFuel.setminingGrid(1, self.tcpConnector.getEventValue(1))
+                            self.baseStationFuel.setminingGrid(2, self.tcpConnector.getEventValue(2))
+                            self.baseStationFuel.setminingGrid(3, self.tcpConnector.getEventValue(3))
   

@@ -45,12 +45,12 @@ class ServerChannel(Channel):
         self.spaceship.score += data['points_scored']
         # generate the new leaderboard information
         
-        if self.spaceship.assignedPlot !=0:
+        if self.spaceship.assignedPlot != 0:
             self._server.conquerPlot(self.spaceship.assignedPlot)
             self.spaceship.assignedPlot = 0
             self.SendGridStatus()
         self.SendLeaderBoard()
-        self.SendNotification("HURRAY!!! Player " + str(self.id)+ " has conqured a "+ data['plot_type']+" plot")
+        self.SendNotification("HURRAY!!! Player " + str(self.id) + " has conqured a " + data['plot_type'] + " plot")
     
     def BuyFuel(self, data):
         return_data = {}
@@ -60,7 +60,7 @@ class ServerChannel(Channel):
             return_data.update({BASE_STATION_FUEL_UPDATED: self._server.buyFuel()})
             return_data.update({"response_action" : BASE_STATION_FUEL_UPDATED})
             self.PassOn(return_data)
-            self.SendNotification("Player " + str(self.id)+ " bought fuel")
+            self.SendNotification("Player " + str(self.id) + " bought fuel")
             # because gold was spent to buy fuel, we need to update game score
             self.SendGameScore()
         else:
@@ -68,7 +68,7 @@ class ServerChannel(Channel):
             return_data.update({"response_action" : FUEL_REQUEST_DENIED})
             self.send(return_data)
     
-    def AssignPlot(self,data):
+    def AssignPlot(self, data):
         '''
         checks if a plot of plot type is  available and if yes, then assign it. 
         '''
@@ -80,7 +80,7 @@ class ServerChannel(Channel):
             return_data.update({"response_action" : REQUEST_PLOT_APPROVED})
             self.assignedPlot = data['plot_type']
             self.PassOn(return_data)
-            self.SendNotification("Player " + str(self.id)+ " has been assigned a "+ data['plot_type']+" plot" )
+            self.SendNotification("Player " + str(self.id) + " has been assigned a " + data['plot_type'] + " plot")
             self.SendGridStatus()
         else:
             # plot of this type not available
@@ -94,12 +94,12 @@ class ServerChannel(Channel):
         # subtracts one player from the game and set the player as inactive
         self.active = False
         self._server.subtractPlayer() 
-        new_data ={}
+        new_data = {}
         new_data.update({"response_action":GAME_OVER_FOR_CLIENT})
         #send this new information to all clients, they will just print this on their screens
         self.send(new_data);
         #Now warn all other players that the player crashed.
-        self.SendNotification("Player "+self.id+" crashed")
+        self.SendNotification("Player " + self.id + " crashed")
         self._server.freePlot(data)
         self.SendGridStatus()
     
@@ -108,59 +108,48 @@ class ServerChannel(Channel):
         a) check if the spaceship has any mineral.
         '''
     def SendLeaderBoard(self):
-        new_data ={}
+        new_data = {}
         new_data.update({PRINT_LEADERBOARD: self._server.getLeaderboard()})
         new_data.update({"response_action":PRINT_LEADERBOARD})
         #send this new information to all clients, they will just print this on their screens
         self.PassOn(new_data)
     
     def SendGameScore(self):
-        return_data ={}
+        return_data = {}
         return_data.update({UPDATE_GAME_SCORE:self._server.getGameScore()})
         return_data.update({"response_action":UPDATE_GAME_SCORE})
         self.PassOn(return_data)
         
     def SendNotification(self, msg):
-        notification_data={}
+        notification_data = {}
         notification_data.update({"response_action":NOTIFICATION})
         notification_data.update({NOTIFICATION:msg})
         #send this to all players
         self.PassOn(notification_data);
     def SendGridStatus(self):
-        return_data ={}
+        return_data = {}
         return_data.update({UPDATE_GRID_STATUS:self._server.getGridStatus()})
         return_data.update({"response_action":UPDATE_GRID_STATUS})
         self.PassOn(return_data)
     ##################################
     ### Network specific callbacks ###
     ##################################
-    
-    def Network_startline(self, data):
-        # TODO: Update to data we send to client
-        self.lines.append([data['point']])
-        self.PassOn(data)
-    
-    def Network_drawpoint(self, data):
-        # TODO: Another update to data we send to client
-        print "drawpoint"
-        self.lines[-1].append(data['point'])
-        self.PassOn(data)
-    
     def Network(self, data):
         print "event listed at server side"
-        action = data['request_action']
-        if action == LANDED_SUCCESSFULLY:
-            self.HandleSuccessLanding(data)
-        elif action == BUY_FUEL:
-            self.BuyFuel(data)
-        elif action == RETURN_TO_EARTH:
-            self.ReturnToEarth(data)
-        elif action == CRASH_LANDED:
-            pass
-        elif action == REQUEST_PLOT:
-            pass
-        elif action == QUIT_GAME:
-            pass
+        if 'request_action' in data:
+            action = data['request_action']
+            if action == LANDED_SUCCESSFULLY:
+                self.HandleSuccessLanding(data)
+            elif action == BUY_FUEL:
+                self.BuyFuel(data)
+            elif action == RETURN_TO_EARTH:
+                self.ReturnToEarth(data)
+            elif action == CRASH_LANDED:
+                pass
+            elif action == REQUEST_PLOT:
+                pass
+            elif action == QUIT_GAME:
+                pass
 
 class LunarLanderServer(Server):
     channelClass = ServerChannel
@@ -221,15 +210,15 @@ class LunarLanderServer(Server):
             sleep(0.0001)
 
     def getLeaderboard(self):
-        leaderboard =[]
-        PlayerInfo = namedtuple('PlayerInfo','name score')
+        leaderboard = []
+        PlayerInfo = namedtuple('PlayerInfo', 'name score')
         
         for p in self.players:
             row = PlayerInfo(name=p.id, score=p.score)
             leaderboard.append(row)
-        leaderboard.sort(key=self.getPlayerScore,reverse=True)
-        print (self.leaderboardToString(self,leaderboard))
-        data = self.leaderboardToString(self,leaderboard)
+        leaderboard.sort(key=self.getPlayerScore, reverse=True)
+        print (self.leaderboardToString(self, leaderboard))
+        data = self.leaderboardToString(self, leaderboard)
         return data
     
     def canBuyFuel(self):
@@ -244,25 +233,25 @@ class LunarLanderServer(Server):
     def getGridStatus(self):
         return self.service.getGridStatus()
     
-    def canAssignPlot(self,data):
+    def canAssignPlot(self, data):
         return self.service.canAssignPlot(data['plot_type'])
     
-    def getPlot(self,data):
+    def getPlot(self, data):
         self.service.assignPlot(data['plot_type'])
         return self.getGridStatus()
     
-    def freePlot(self,data):
+    def freePlot(self, data):
         self.service.freePlot(data['plot_type'])
         return self.getGridStatus()
     
-    def conquerPlot(self,data):
+    def conquerPlot(self, data):
         return self.service.conquerPlot(data)
     
     def subtractPlayer(self):
-        self.ActivePlayers= self.ActivePlayers-1
+        self.ActivePlayers = self.ActivePlayers - 1
 
     def addPlayer(self):
-        self.ActivePlayers= self.ActivePlayers+1
+        self.ActivePlayers = self.ActivePlayers + 1
 
 # get command line argument of server, port
 if len(sys.argv) != 2:

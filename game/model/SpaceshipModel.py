@@ -17,13 +17,13 @@ class SpaceshipModel(object):
         '''
         Constructor
         '''
-        self.active= True
+        self.active = True
          # update the number of active players
         self.score = 0;
         self.assignedPlot = 0
         self.mass = SPACESHIP_OWN_MASS
         self.cargoCapacity = SPACESHIP_CARGO_CAPACITY
-        self.minerals={GOLD:0,
+        self.minerals = {GOLD:0,
                        COPPER:0,
                        IRON:0}
         
@@ -36,8 +36,8 @@ class SpaceshipModel(object):
     def GetAvailableCapacity(self):
         used = 0
         for key in self.minerals.keys():
-            used +=self.minerals[key]
-        return self.cargoCapacity-used
+            used += self.minerals[key]
+        return self.cargoCapacity - used
     
     def getSelfStateObj(self):
         return vars(self)

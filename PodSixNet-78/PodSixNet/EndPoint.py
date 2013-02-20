@@ -106,7 +106,7 @@ if __name__ == "__main__":
 				{"action": "hello", "data": {"a": 321, "b": [2, 3, 4], "c": ["afw", "wafF", "aa", "weEEW", "w234r"], "d": ["x"] * 256}},
 				{"action": "hello", "data": [454, 35, 43, 543, "aabv"]},
 				{"action": "hello", "data": [10] * 512},
-				{"action": "hello", "data": [10] * 512, "otherstuff": "hello\0---\0goodbye", "x": [0, "---", 0], "y": "zäö"},
+				{"action": "hello", "data": [10] * 512, "otherstuff": "hello\0---\0goodbye", "x": [0, "---", 0], "y": "z????"},
 			]
 			self.count = len(self.outgoing)
 			self.lengths = [len(data['data']) for data in self.outgoing]

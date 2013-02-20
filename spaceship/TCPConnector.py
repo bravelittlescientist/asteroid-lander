@@ -9,7 +9,7 @@ class TCPConnector(object):
     handles all the communication between client and server
     '''
     
-    eventName=""
+    eventName = ""
 
     def __init__(self, selfparams):
         '''
