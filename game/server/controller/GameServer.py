@@ -1,5 +1,6 @@
 from PodSixNet.Channel import Channel
 from PodSixNet.Server import Server
+from ServerHelper import *
 from collections import namedtuple
 from game.Constants import *
 from game.model.SpaceshipModel import SpaceshipModel
@@ -7,7 +8,6 @@ from game.server.businessservice.BusinessService import BusinessService
 from random import randint
 from time import sleep, localtime
 from weakref import WeakKeyDictionary
-from ServerHelper import *
 import sys
 
 
@@ -33,24 +33,30 @@ class ServerChannel(Channel):
     
     def HandleSuccessLanding(self, data):
         '''
-        a) check the spaceship's available space, and load x units minerals to spaceship based on plot type
-        b) increase player's score based on the points, as received from the client
-        c) increase the mass of the spaceship by x units 
-        d) set the plot conquered
-        e) notify that a plot of this plot-type has been conqured
-        f) notify to update leaderboard
-        g) notify the grid status
+        a) check the spaceship's available space, and load x units minerals to spaceship based on plot type : done
+        b) increase player's score based on the points, as received from the client : done
+        c) increase the mass of the spaceship by x units : done
+        d) set the plot conquered : done
+        e) notify that a plot of this plot-type has been conqured : done
+        f) notify to update leaderboard : done
+        g) notify the grid status   : done
+        e) notify the self player about new spaceship state. 
         '''
         print "inside HandleSucessLanding"
-        # add to the score of this client.
-        self.spaceship.score += data['points_scored']
-        # generate the new leaderboard information
         if self.spaceship.assignedPlot != 0:
+            print "ship has landed successfully, lets load minerals and increase it's score"
+            self.spaceship.score += data['points_scored']
+            # load mineral
+            self._server.loadMineral(self.spaceship.assignedPlot, self.spaceship)
             self._server.conquerPlot(self.spaceship.assignedPlot)
+            self.SendNotification("HURRAY!!! Player " + str(self.id)+ " has conquered a "+ self.spaceship.assignedPlot+" plot")
             self.spaceship.assignedPlot = 0
+            self.SendSpaceShipInfoToSelfPlayer()
             self.SendGridStatus()
             self.SendLeaderBoard()
-            self.SendNotification("HURRAY!!! Player " + str(self.id)+ " has conquered a "+ data['plot_type']+" plot")
+            
+        else:
+            print "no plot assigned to spaceship, it can not land. this event should not have been passed by client"
     
     def BuyFuel(self, data):
         return_data = self.GetReturnData()
@@ -81,7 +87,7 @@ class ServerChannel(Channel):
             #assign plot now
             return_data.update({REQUEST_PLOT_APPROVED: self._server.getPlot(data)})
             return_data.update({"response_action" : REQUEST_PLOT_APPROVED})
-            self.assignedPlot = data['plot_type']
+            self.spaceship.assignedPlot = data['plot_type']
             self.PassOn(return_data)
             self.SendNotification("Player " + str(self.id) + " has been assigned a " + data['plot_type'] + " plot")
             self.SendGridStatus()
@@ -157,8 +163,17 @@ class ServerChannel(Channel):
         self.SendNotification("Player "+self.id+" quit :( ")
         self._server.freePlot(data)
         self.SendGridStatus()
+    
+    def SendSpaceShipInfoToSelfPlayer(self):
+        print "sending spaceshipinfo to player ", self.id
+        new_data = self.GetReturnData()
+        new_data.update({UPDATE_SPACESHIP_STATE: self.spaceship.getSelfStateObj()})
+        new_data.update({"response_action":UPDATE_SPACESHIP_STATE})
+        #send this new information to all clients, they will just print this on their screens
+        self.PassOn(new_data)
         
     def SendLeaderBoard(self):
+        print "sending leaderboard to all"
         new_data = self.GetReturnData()
         new_data.update({PRINT_LEADERBOARD: self._server.getLeaderboard()})
         new_data.update({"response_action":PRINT_LEADERBOARD})
@@ -166,18 +181,21 @@ class ServerChannel(Channel):
         self.PassOn(new_data)
     
     def SendGameScore(self):
+        print "sending game score to all"
         return_data = self.GetReturnData()
         return_data.update({UPDATE_GAME_SCORE:self._server.getGameScore()})
         return_data.update({"response_action":UPDATE_GAME_SCORE})
         self.PassOn(return_data)
         
     def SendNotification(self, msg):
+        print "notifying all ", msg
         notification_data = self.GetReturnData()
         notification_data.update({"response_action":NOTIFICATION})
         notification_data.update({NOTIFICATION:msg})
         #send this to all players
         self.PassOn(notification_data);
     def SendGridStatus(self):
+        print "sending grid status to all"
         return_data = self.GetReturnData()
         return_data.update({UPDATE_GRID_STATUS:self._server.getGridStatus()})
         return_data.update({"response_action":UPDATE_GRID_STATUS})
@@ -299,6 +317,9 @@ class LunarLanderServer(Server):
     
     def conquerPlot(self, data):
         return self.service.conquerPlot(data)
+    
+    def loadMineral(self, data, spaceship):
+        self.service.loadMineral(data, spaceship)
     
     def subtractPlayer(self):
         self.ActivePlayers = self.ActivePlayers - 1

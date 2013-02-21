@@ -33,7 +33,7 @@ class SpaceshipModel(object):
     def getAltitude(self): 
         return self.altitude
     
-    def GetAvailableCapacity(self):
+    def getAvailableCapacity(self):
         used = 0
         for key in self.minerals.keys():
             used += self.minerals[key]

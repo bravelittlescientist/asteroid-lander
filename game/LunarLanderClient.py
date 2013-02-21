@@ -25,9 +25,7 @@ class Client(ConnectionListener, Lander):
         #def PenDraw(self, e):
         #    connection.Send({"action": "draw", "point": e.pos})
     def fireRequest(self, data):
-        print "before: ", data
         data.update({"action": "request"})
-        print "after:", data
         connection.Send(data)
 
     def LandedSafely(self, info):
@@ -92,6 +90,8 @@ class Client(ConnectionListener, Lander):
                 print GOLD + ' = ',miningGrid[GOLD]
                 print IRON + ' = ',miningGrid[IRON]
                 print COPPER + ' = ', miningGrid[COPPER]
+            elif action == UPDATE_SPACESHIP_STATE:
+                pass # update the spaceship information
         else:
             print "data received: ", data    
     

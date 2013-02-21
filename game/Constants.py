@@ -23,6 +23,7 @@ GAME_OVER_ALL = "game_over_all"
 UPDATE_PLOT_GRID = "mining_grid_changed"
 FUEL_REQUEST_DENIED = "fuel_request_denied"
 UPDATE_GRID_STATUS = "update_grid_status"
+UPDATE_SPACESHIP_STATE = "update_spaceship_state"
 
 
 # others
@@ -38,7 +39,7 @@ BUY_RATE = 5
 FUEL_EXCHANGE = 10 # this much units of fuel will be bought per transaction
 GOLD_MINE_LIMIT = 5
 COPPER_MINE_LIMIT = 10
-IRON_MINE_UNIT = 15
+IRON_MINE_LIMIT = 15
 SPACESHIP_OWN_MASS = 50
 SPACESHIP_CARGO_CAPACITY = 100
 SPACESHIP_FUEL_CAPACITY = 100
