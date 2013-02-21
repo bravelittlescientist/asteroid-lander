@@ -118,12 +118,12 @@ class ServerChannel(Channel):
         b) check if goal was accomplished.
         c) try to refuel spaceship
         d) notify all players about changes in the Base Station fuel level and Game Score
-        '''      
-        self.spaceship.minerals[GOLD] = 0
-        self.spaceship.minerals[IRON] = 0
-        self.spaceship.minerals[COPPER] = 0
+        '''
         
-        self._server.updateGameScore(data)
+        self._server.updateGameScore(self.spaceship)
+        new_data =self.GetReturnData()
+        new_data.update({"response_action":UPDATE_GAME_SCORE})
+        self.PassOn(new_data)
         
         if self._server.checkGoalAccomplished():
             self.SendNotification("Mission Accomplished! Congratulations!")
@@ -148,6 +148,9 @@ class ServerChannel(Channel):
             self.Send(new_data);
             self.SendNotification("Player "+self.id+" could no refuel at Base Station :( ")
 
+            self.spaceship.minerals[GOLD] = 0
+            self.spaceship.minerals[IRON] = 0
+            self.spaceship.minerals[COPPER] = 0
         
     def Quit(self,data):
         '''
@@ -327,8 +330,8 @@ class LunarLanderServer(Server):
     def addPlayer(self):
         self.ActivePlayers = self.ActivePlayers + 1
 
-    def updateGameScore(self,data):
-        return self.service.updateGameScore(data)
+    def updateGameScore(self,spaceship):
+        return self.service.updateGameScore(spaceship)
 
     def checkGoalAccomplished(self):
         return self.service.checkGoalAccomplished()

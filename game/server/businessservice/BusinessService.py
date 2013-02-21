@@ -56,10 +56,10 @@ class BusinessService(object):
         spaceship.minerals[type] += min(capacity,self.gameRule.plots[type]['mine_limit'])
         spaceship.mass += min(capacity,self.gameRule.plots[type]['mine_limit'])
     
-    def updateGameScore(self,data):
-        self.baseStation.gameScore[GOLD] += data[GOLD]
-        self.baseStation.gameScore[IRON] += data[IRON]
-        self.baseStation.gameScore[COPPER] += data[COPPER]
+    def updateGameScore(self,spaceship):
+        self.baseStation.gameScore[GOLD] += spaceship.minerals[GOLD]
+        self.baseStation.gameScore[IRON] += spaceship.minerals[IRON]
+        self.baseStation.gameScore[COPPER] += spaceship.minerals[COPPER]
         
     def checkGoalAccomplished(self):
         if self.baseStation.gameScore[GOLD] >= self.gameRule.gameGoal[GOLD] and self.baseStation.gameScore[IRON] >= self.gameRule.gameGoal[IRON] and  self.baseStation.gameScore[COPPER] >= self.gameRule.gameGoal[COPPER]:
