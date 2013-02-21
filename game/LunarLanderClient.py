@@ -75,15 +75,15 @@ class Client(ConnectionListener, Lander):
             elif action == BASE_STATION_FUEL_UPDATED:
                 print action + ':' + data[action]        
             elif action == FUEL_REQUEST_DENIED:
-                print action + '!'
+                print action + '!'+ data[action]
             elif action == REQUEST_PLOT_APPROVED:
-                print action + '!'
+                print action + '!' + data[action]
             elif action == REQUEST_PLOT_DENIED:
-                print action + '!'
+                print action + '!' + data[action]
             elif action == NOTIFICATION:
                 print action + ':' + data[action]
             elif action == UPDATE_GAME_SCORE:
-                print action + ':'
+                print action + ':' + data[action]
                 gameScore = data[action]
                 print GOLD + ' = ', gameScore[GOLD]
                 print IRON + ' = ', gameScore[IRON]
@@ -95,7 +95,8 @@ class Client(ConnectionListener, Lander):
                 print IRON + ' = ',miningGrid[IRON]
                 print COPPER + ' = ', miningGrid[COPPER]
             elif action == UPDATE_SPACESHIP_STATE:
-                pass # update the spaceship information
+                print action + data[action]
+                # update the spaceship information
         else:
             print "data received: ", data    
     

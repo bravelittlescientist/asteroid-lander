@@ -27,17 +27,22 @@ class Lander:
                 exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_l:
-                    print "L is pressed"
+                    print event.key, "is pressed"
                     self.LandedSafely(12)
                 elif event.key == pygame.K_c:
+                    print event.key, "is pressed"
                     self.CrashLanded()
                 elif event.key == pygame.K_b:
+                    print event.key, "is pressed"
                     self.BuyFuel();
                 elif event.key == pygame.K_r:
+                    print event.key, "is pressed"
                     self.RequestPlot(GOLD);
                 elif event.key == pygame.K_e:
+                    print event.key, "is pressed"
                     self.ReturnToEarth();
                 elif event.key == pygame.K_q:
+                    print event.key, "is pressed"
                     self.QuitGame();
                 else:
                     pass

@@ -336,6 +336,7 @@ class LunarLanderServer(Server):
         self.ActivePlayers = self.ActivePlayers - 1
 
     def addPlayer(self):
+        print "adding player"
         self.ActivePlayers = self.ActivePlayers + 1
 
     def updateGameScore(self,spaceship):
@@ -356,7 +357,7 @@ class LunarLanderServer(Server):
         return str(pInfo.name) + "  :  " + str(pInfo.score)
     
     def leaderboardToString(self, leaderboard):
-        returnString = "player  :   score"
+        returnString = "player  :   score \n"
         returnString += "*"*10
         for pInfo in leaderboard:
             returnString += "\n" + self.playerInfoToString(pInfo)
