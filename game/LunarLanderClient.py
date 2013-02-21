@@ -30,27 +30,27 @@ class Client(ConnectionListener, Lander):
 
     def LandedSafely(self, info):
         print "event key down captured"
-        self.fireRequest({"request_action":LANDED_SUCCESSFULLY, "points_scored": info})
+        self.fireRequest({"request_action":LANDED_SUCCESSFULLY, POINT_SCORED: info})
     
     def CrashLanded(self, info=None):
         print "event key c captured"
-        self.fireRequest({"request_action":CRASH_LANDED, "spaceship_crashed": info})
+        self.fireRequest({"request_action":CRASH_LANDED, CRASH_LANDED: info})
     
-    def BuyFuel(self, info=" "):
+    def BuyFuel(self, info=None):
         print "event key b captured"
-        self.fireRequest({"request_action":BUY_FUEL, "buy_fuel": info})    
+        self.fireRequest({"request_action":BUY_FUEL, BUY_FUEL: info})    
     
     def RequestPlot(self, info):
         print "event key r captured", info
-        self.fireRequest({"request_action":REQUEST_PLOT, "plot_type": info})
+        self.fireRequest({"request_action":REQUEST_PLOT, PLOT_TYPE: info})
     
     def ReturnToEarth(self, info=None):
         print "event key e captured", info
-        self.fireRequest({"request_action":RETURN_TO_EARTH, "return_to_earth": info})
+        self.fireRequest({"request_action":RETURN_TO_EARTH, SPACESHIP_FUEL_KEY: info})
     
     def QuitGame(self, info=None):
         print "event key q captured"
-        self.fireRequest({"request_action":QUIT_GAME, "quit_game": info})
+        self.fireRequest({"request_action":QUIT_GAME, QUIT_GAME: info})
         
         ###############################
         ### Network event callbacks ###
@@ -83,13 +83,13 @@ class Client(ConnectionListener, Lander):
             elif action == NOTIFICATION:
                 print action , ':' , data[action]
             elif action == UPDATE_GAME_SCORE:
-                print action , ':' , data[action]
+                print action , ' event received'
                 gameScore = data[action]
                 print GOLD , ' = ', gameScore[GOLD]
                 print IRON , ' = ', gameScore[IRON]
                 print COPPER , ' = ', gameScore[COPPER]
             elif action == UPDATE_GRID_STATUS:
-                print action , ':'
+                print action , ' event received'
                 miningGrid = data[action]
                 print GOLD , ' = ',miningGrid[GOLD]
                 print IRON , ' = ',miningGrid[IRON]

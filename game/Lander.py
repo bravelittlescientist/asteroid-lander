@@ -28,7 +28,7 @@ class Lander:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_l:
                     print event.key, "is pressed"
-                    self.LandedSafely(12)
+                    self.LandedSafely(12) #this is the landing points.We have to obtain it from the PhysicsEngine
                 elif event.key == pygame.K_c:
                     print event.key, "is pressed"
                     self.CrashLanded()
@@ -40,7 +40,7 @@ class Lander:
                     self.RequestPlot(GOLD);
                 elif event.key == pygame.K_e:
                     print event.key, "is pressed"
-                    self.ReturnToEarth();
+                    self.ReturnToEarth(100); #this is fuel level. We have to obtain it from the GUI
                 elif event.key == pygame.K_q:
                     print event.key, "is pressed"
                     self.QuitGame();

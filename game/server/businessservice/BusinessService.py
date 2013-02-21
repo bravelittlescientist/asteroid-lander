@@ -55,6 +55,7 @@ class BusinessService(object):
         capacity = spaceship.getAvailableCapacity()
         spaceship.minerals[type] += min(capacity,self.gameRule.plots[type]['mine_limit'])
         spaceship.mass += min(capacity,self.gameRule.plots[type]['mine_limit'])
+        print "GOLD in spaceship", spaceship.minerals[GOLD]
     
     def updateGameScore(self,spaceship):
         self.baseStation.gameScore[GOLD] += spaceship.minerals[GOLD]
