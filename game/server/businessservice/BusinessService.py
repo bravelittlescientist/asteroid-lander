@@ -48,9 +48,14 @@ class BusinessService(object):
         return (True, "SUCCESS")
     
     def conquerPlot(self,type):
-        if self.baseStation.conqueredPlot[type]< self.gameRule.maxPlotCount[type]:
+        if self.baseStation.conqueredPlot[type]< self.gameRule.plots[type]['total_count']:
             self.baseStation.conqueredPlot[type] = self.baseStation.conqueredPlot[type]+1
-            
+
+    def loadMineral(self, type, spaceship):
+        capacity = spaceship.getAvailableCapacity()
+        spaceship.minerals[type] += min(capacity,self.gameRule.plots[type]['mine_limit'])
+        spaceship.mass += min(capacity,self.gameRule.plots[type]['mine_limit'])
+    
     def updateGameScore(self,data):
         self.baseStation.gameScore[GOLD] += data[GOLD]
         self.baseStation.gameScore[IRON] += data[IRON]

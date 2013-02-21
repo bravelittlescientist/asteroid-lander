@@ -20,10 +20,15 @@ class GameRule(object):
         self.gameGoal = {GOLD:30,
                           COPPER:80,
                           IRON:120}
-        self.maxPlotCount = {GOLD:GOLD_PLOT_TOTAL,
-                          COPPER:COPPER_PLOT_TOTAL,
-                          IRON:IRON_PLOT_TOTAL}
-    
+        self.plots = {GOLD:{'mine_limit':GOLD_MINE_LIMIT,
+                             'total_count':GOLD_PLOT_TOTAL
+                             },
+                      COPPER:{'mine_limit':COPPER_MINE_LIMIT,
+                              'total_count':COPPER_PLOT_TOTAL
+                              },
+                      IRON:{'mine_limit':IRON_MINE_LIMIT,
+                            'total_count':IRON_PLOT_TOTAL}
+                      }
     def getBuyRate(self):
         return self.buyRate
     
