@@ -118,20 +118,12 @@ class ServerChannel(Channel):
         b) check if goal was accomplished.
         c) try to refuel spaceship
         d) notify all players about changes in the Base Station fuel level and Game Score
-<<<<<<< HEAD
         '''
         
         self._server.updateGameScore(self.spaceship)
         new_data =self.GetReturnData()
         new_data.update({"response_action":UPDATE_GAME_SCORE})
         self.PassOn(new_data)
-=======
-        '''      
-        self.spaceship.minerals[GOLD] = 0
-        self.spaceship.minerals[IRON] = 0
-        self.spaceship.minerals[COPPER] = 0
-        self._server.updateGameScore(data)
->>>>>>> 676434afb0230b31f79a46a30414e0e23b7ca238
         
         if self._server.checkGoalAccomplished():
             self.SendNotification("Mission Accomplished! Congratulations!")
