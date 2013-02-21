@@ -42,11 +42,18 @@ class BusinessService(object):
         self.baseStation.mineGrid[type] = self.baseStation.mineGrid[type] - 1
     def freePlot(self, type):
         self.baseStation.mineGrid[type] = self.baseStation.mineGrid[type] + 1
-    def canAssignPlot(self, type):
-        if self.baseStation.mineGrid[type] < 1:
-            return (False, "NO MORE PLOTS AVAILABLE OF THIS TYPE")
-        return (True, "SUCCESS")
-    
+    def canAssignPlot(self, type, spaceship):
+        if spaceship.assignedPlot==0:
+            if spaceship.getAvailableCapacity()>0:
+                if self.baseStation.mineGrid[type] < 1:
+                    return (False, "NO MORE PLOTS AVAILABLE OF THIS TYPE")
+                else:
+                    return (True, "SUCCESS")
+            else:
+                return (False, "You Must return to Earth to unload your cargo. You have reached max capacity".upper())
+        else:
+            return (False, "ALREADY ASSIGNED A PLOT. DON'T BE GREEDY LAND ON ONE PLOT AT A TIME ;)")
+
     def conquerPlot(self,type):
         if self.baseStation.conqueredPlot[type]< self.gameRule.plots[type]['total_count']:
             self.baseStation.conqueredPlot[type] = self.baseStation.conqueredPlot[type]+1
@@ -55,6 +62,7 @@ class BusinessService(object):
         capacity = spaceship.getAvailableCapacity()
         spaceship.minerals[type] += min(capacity,self.gameRule.plots[type]['mine_limit'])
         spaceship.mass += min(capacity,self.gameRule.plots[type]['mine_limit'])
+        return capacity>0
     
     def updateGameScore(self,spaceship):
         self.baseStation.gameScore[GOLD] += spaceship.minerals[GOLD]

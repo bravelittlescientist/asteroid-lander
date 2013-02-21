@@ -54,7 +54,6 @@ class ServerChannel(Channel):
             self.SendSpaceShipInfoToSelfPlayer()
             self.SendGridStatus()
             self.SendLeaderBoard()
-            
         else:
             print "no plot assigned to spaceship, it can not land. this event should not have been passed by client"
     
@@ -82,7 +81,7 @@ class ServerChannel(Channel):
         checks if a plot of plot type is  available and if yes, then assign it. 
         '''
         return_data = self.GetReturnData()
-        canAssignPlot = self._server.canAssignPlot(data)
+        canAssignPlot = self._server.canAssignPlot(data, self.spaceship)
         if canAssignPlot[0]:
             #assign plot now
             return_data.update({REQUEST_PLOT_APPROVED: self._server.getPlot(data)})
@@ -307,8 +306,8 @@ class LunarLanderServer(Server):
     def getGridStatus(self):
         return self.service.getGridStatus()
     
-    def canAssignPlot(self, data):
-        return self.service.canAssignPlot(data['plot_type'])
+    def canAssignPlot(self, data, spaceship):
+        return self.service.canAssignPlot(data['plot_type'], spaceship)
     
     def getPlot(self, data):
         self.service.assignPlot(data['plot_type'])
@@ -322,7 +321,7 @@ class LunarLanderServer(Server):
         return self.service.conquerPlot(data)
     
     def loadMineral(self, data, spaceship):
-        self.service.loadMineral(data, spaceship)
+        return self.service.loadMineral(data, spaceship)
     
     def subtractPlayer(self):
         self.ActivePlayers = self.ActivePlayers - 1
