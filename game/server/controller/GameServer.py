@@ -120,9 +120,7 @@ class ServerChannel(Channel):
         '''
         
         self._server.updateGameScore(self.spaceship)
-        new_data =self.GetReturnData()
-        new_data.update({"response_action":UPDATE_GAME_SCORE})
-        self.PassOn(new_data)
+        self.SendGameScore()
         
         if self._server.checkGoalAccomplished():
             self.SendNotification("Mission Accomplished! Congratulations!")
