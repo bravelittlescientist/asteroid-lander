@@ -71,31 +71,31 @@ class Client(ConnectionListener, Lander):
             action = data['response_action']
             print "data", data
             if action == PRINT_LEADERBOARD:
-                print action + ':\n' + data[action]
+                print action , ':\n' , data[action]
             elif action == BASE_STATION_FUEL_UPDATED:
-                print action + ':' + data[action]        
+                print action , ':' , data[action]        
             elif action == FUEL_REQUEST_DENIED:
-                print action + '!'+ data[action]
+                print action , '!', data[action]
             elif action == REQUEST_PLOT_APPROVED:
-                print action + '!' + data[action]
+                print action , '!' , data[action]
             elif action == REQUEST_PLOT_DENIED:
-                print action + '!' + data[action]
+                print action , '!' , data[action]
             elif action == NOTIFICATION:
-                print action + ':' + data[action]
+                print action , ':' , data[action]
             elif action == UPDATE_GAME_SCORE:
-                print action + ':' + data[action]
+                print action , ':' , data[action]
                 gameScore = data[action]
-                print GOLD + ' = ', gameScore[GOLD]
-                print IRON + ' = ', gameScore[IRON]
-                print COPPER + ' = ', gameScore[COPPER]
+                print GOLD , ' = ', gameScore[GOLD]
+                print IRON , ' = ', gameScore[IRON]
+                print COPPER , ' = ', gameScore[COPPER]
             elif action == UPDATE_GRID_STATUS:
-                print action + ':'
+                print action , ':'
                 miningGrid = data[action]
-                print GOLD + ' = ',miningGrid[GOLD]
-                print IRON + ' = ',miningGrid[IRON]
-                print COPPER + ' = ', miningGrid[COPPER]
+                print GOLD , ' = ',miningGrid[GOLD]
+                print IRON , ' = ',miningGrid[IRON]
+                print COPPER , ' = ', miningGrid[COPPER]
             elif action == UPDATE_SPACESHIP_STATE:
-                print action + data[action]
+                print action , data[action]
                 # update the spaceship information
         else:
             print "data received: ", data    
