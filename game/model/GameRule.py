@@ -17,17 +17,17 @@ class GameRule(object):
         self.buyRate = BUY_RATE
         self.exchangeUnit = GOLD
         self.fuelPerExchangeUnit = FUEL_EXCHANGE
-        self.gameGoal = {GOLD:20,
-                          COPPER:0,
-                          IRON:0}
-        self.plots = {GOLD:{'mine_limit':GOLD_MINE_LIMIT,
-                             'total_count':GOLD_PLOT_TOTAL
+        self.gameGoal = {GOLD:30,
+                          COPPER:80,
+                          IRON:120}
+        self.plots = {GOLD:{MINE_LIMIT_STRING:GOLD_MINE_LIMIT,
+                             TOTAL_COUNT_STRING:GOLD_PLOT_TOTAL
                              },
-                      COPPER:{'mine_limit':COPPER_MINE_LIMIT,
-                              'total_count':COPPER_PLOT_TOTAL
+                      COPPER:{MINE_LIMIT_STRING:COPPER_MINE_LIMIT,
+                              TOTAL_COUNT_STRING:COPPER_PLOT_TOTAL
                               },
-                      IRON:{'mine_limit':IRON_MINE_LIMIT,
-                            'total_count':IRON_PLOT_TOTAL}
+                      IRON:{MINE_LIMIT_STRING:IRON_MINE_LIMIT,
+                            TOTAL_COUNT_STRING:IRON_PLOT_TOTAL}
                       }
     def getBuyRate(self):
         return self.buyRate
