@@ -122,7 +122,6 @@ class ServerChannel(Channel):
         self.spaceship.minerals[GOLD] = 0
         self.spaceship.minerals[IRON] = 0
         self.spaceship.minerals[COPPER] = 0
-        
         self._server.updateGameScore(data)
         
         if self._server.checkGoalAccomplished():
