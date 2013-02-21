@@ -22,6 +22,7 @@ class ServerChannel(Channel):
         intid = int(self.id)
         self._server.addPlayer()
         self.spaceship = SpaceshipModel()
+        self.active=True
     
     def PassOn(self, data):
         # pass on what we received to all connected clients
@@ -99,17 +100,18 @@ class ServerChannel(Channel):
             self.SendGridStatus()
     
     def ProcessCrash(self, data):
-        # subtracts one player from the game and set the player as inactive
-        self.active = False
-        self._server.subtractPlayer() 
-        new_data = self.GetReturnData()
-        new_data.update({"response_action":GAME_OVER_FOR_CLIENT})
-        #send this new information to all clients, they will just print this on their screens
-        self.Send(new_data);
-        #Now warn all other players that the player crashed.
-        self.SendNotification("Player " + self.id + " crashed")
-        self._server.freePlot(data)
-        self.SendGridStatus()
+        if self.active == True:
+            # subtracts one player from the game and set the player as inactive
+            self.active = False
+            self._server.subtractPlayer() 
+            new_data = self.GetReturnData()
+            new_data.update({"response_action":GAME_OVER_FOR_CLIENT})
+            #send this new information to all clients, they will just print this on their screens
+            self.Send(new_data);
+            #Now warn all other players that the player crashed.
+            self.SendNotification("Player " + self.id + " crashed")
+            self._server.freePlot(self.spaceship.assignedPlot)
+            self.SendGridStatus()
     
     def ReturnToEarth(self, data):
         '''
@@ -136,14 +138,12 @@ class ServerChannel(Channel):
             self.PassOn(new_data)
             self.SendNotification("Player " + str(self.id)+ " was refueled at Base Station")
         else:
-            #No fuel left, game over for this player
-            self.active = False
-            self._server.subtractPlayer() 
+            #No fuel left
             new_data =self.GetReturnData()
-            new_data.update({"response_action":GAME_OVER_FOR_CLIENT})
+            new_data.update({"response_action":NO_FUEL_LEFT})
             #send this new information to all clients, they will just print this on their screens
             self.Send(new_data);
-            self.SendNotification("Player "+self.id+" could no refuel at Base Station :( ")
+            self.SendNotification("Player "+self.id+" is grounded with no fuel at Base Station. Somebody please buy fuel!")
 
             self.spaceship.minerals[GOLD] = 0
             self.spaceship.minerals[IRON] = 0
@@ -154,15 +154,16 @@ class ServerChannel(Channel):
         A player has quit 
         '''
         # subtracts one player from the game and set the player as inactive
-        self.active = False
-        self._server.subtractPlayer() 
-        new_data =self.GetReturnData()
-        new_data.update({"response_action":GAME_OVER_FOR_CLIENT})
-        #send this new information to all clients, they will just print this on their screens
-        self.Send(new_data);
-        self.SendNotification("Player "+self.id+" quit :( ")
-        self._server.freePlot(data)
-        self.SendGridStatus()
+        if self.active==True:
+            self.active = False
+            self._server.subtractPlayer() 
+            new_data =self.GetReturnData()
+            new_data.update({"response_action":GAME_OVER_FOR_CLIENT})
+            #send this new information to all clients, they will just print this on their screens
+            self.Send(new_data);
+            self.SendNotification("Player "+self.id+" quit :( ")
+            self._server.freePlot(self.spaceship.assignedPlot)
+            self.SendGridStatus()
     
     def SendSpaceShipInfoToSelfPlayer(self):
         print "sending spaceshipinfo to player ", self.id
@@ -311,8 +312,8 @@ class LunarLanderServer(Server):
         self.service.assignPlot(data['plot_type'])
         return self.getGridStatus()
     
-    def freePlot(self, data):
-        self.service.freePlot(data['plot_type'])
+    def freePlot(self,type):
+        self.service.freePlot(type)
         return self.getGridStatus()
     
     def conquerPlot(self, data):

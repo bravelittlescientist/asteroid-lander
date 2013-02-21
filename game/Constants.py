@@ -10,6 +10,7 @@ REQUEST_PLOT = "choose_plot_to_land"
 PLOT_TYPE = "plot_type"
 QUIT_GAME = "quit_game"
 SPACESHIP_FUEL_KEY = "Spaceship Fuel Level"
+NO_FUEL_LEFT = "No fuel left"
 
 
 # server sends this events to clients

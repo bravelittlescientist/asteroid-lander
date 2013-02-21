@@ -17,7 +17,7 @@ class GameRule(object):
         self.buyRate = BUY_RATE
         self.exchangeUnit = GOLD
         self.fuelPerExchangeUnit = FUEL_EXCHANGE
-        self.gameGoal = {GOLD:10,
+        self.gameGoal = {GOLD:20,
                           COPPER:0,
                           IRON:0}
         self.plots = {GOLD:{'mine_limit':GOLD_MINE_LIMIT,

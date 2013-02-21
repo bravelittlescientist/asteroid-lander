@@ -40,8 +40,11 @@ class BusinessService(object):
     
     def assignPlot(self, type):
         self.baseStation.mineGrid[type] = self.baseStation.mineGrid[type] - 1
-    def freePlot(self, type):
-        self.baseStation.mineGrid[type] = self.baseStation.mineGrid[type] + 1
+        
+    def freePlot(self,type):
+        if type==GOLD or type==IRON or type==COPPER:
+            self.baseStation.mineGrid[type] = self.baseStation.mineGrid[type] + 1
+            
     def canAssignPlot(self, type, spaceship):
         if spaceship.assignedPlot==0:
             if spaceship.getAvailableCapacity()>0:
