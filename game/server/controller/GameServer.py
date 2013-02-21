@@ -86,9 +86,9 @@ class ServerChannel(Channel):
             #assign plot now
             return_data.update({REQUEST_PLOT_APPROVED: self._server.getPlot(data)})
             return_data.update({"response_action" : REQUEST_PLOT_APPROVED})
-            self.spaceship.assignedPlot = data['plot_type']
+            self.spaceship.assignedPlot = data[PLOT_TYPE_STRING]
             self.PassOn(return_data)
-            self.SendNotification("Player " + str(self.id) + " has been assigned a " + data['plot_type'] + " plot")
+            self.SendNotification("Player " + str(self.id) + " has been assigned a " + data[PLOT_TYPE_STRING] + " plot")
             self.SendGridStatus()
         else:
             # plot of this type not available
@@ -307,14 +307,14 @@ class LunarLanderServer(Server):
         return self.service.getGridStatus()
     
     def canAssignPlot(self, data, spaceship):
-        return self.service.canAssignPlot(data['plot_type'], spaceship)
+        return self.service.canAssignPlot(data[PLOT_TYPE_STRING], spaceship)
     
     def getPlot(self, data):
-        self.service.assignPlot(data['plot_type'])
+        self.service.assignPlot(data[PLOT_TYPE_STRING])
         return self.getGridStatus()
     
     def freePlot(self, data):
-        self.service.freePlot(data['plot_type'])
+        self.service.freePlot(data[PLOT_TYPE_STRING])
         return self.getGridStatus()
     
     def conquerPlot(self, data):
