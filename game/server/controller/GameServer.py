@@ -52,7 +52,7 @@ class ServerChannel(Channel):
             self.SendLeaderBoard()
             self.SendNotification("HURRAY!!! Player " + str(self.id)+ " has conquered a "+ data['plot_type']+" plot")
     
-    def BuyFuel(self, data):
+    def BuyFuel(self):
         return_data = self.GetReturnData()
         canBuyFuel = self._server.canBuyFuel()
         if canBuyFuel[0]:
@@ -66,7 +66,7 @@ class ServerChannel(Channel):
         else:
             return_data.update({FUEL_REQUEST_DENIED: canBuyFuel[1]})
             return_data.update({"response_action" : FUEL_REQUEST_DENIED})
-            self.send(return_data)
+            self.Send(return_data)
     
     def GetReturnData(self):
         return {"action":"response"}
@@ -89,7 +89,7 @@ class ServerChannel(Channel):
             # plot of this type not available
             return_data.update({REQUEST_PLOT_DENIED: canAssignPlot[1]})
             return_data.update({"response_action" : REQUEST_PLOT_DENIED})
-            self.send(return_data)
+            self.Send(return_data)
             # notify the grid status.
             self.SendGridStatus()
     
@@ -100,7 +100,7 @@ class ServerChannel(Channel):
         new_data = self.GetReturnData()
         new_data.update({"response_action":GAME_OVER_FOR_CLIENT})
         #send this new information to all clients, they will just print this on their screens
-        self.send(new_data);
+        self.Send(new_data);
         #Now warn all other players that the player crashed.
         self.SendNotification("Player " + self.id + " crashed")
         self._server.freePlot(data)
@@ -139,7 +139,7 @@ class ServerChannel(Channel):
             new_data =self.GetReturnData()
             new_data.update({"response_action":GAME_OVER_FOR_CLIENT})
             #send this new information to all clients, they will just print this on their screens
-            self.send(new_data);
+            self.Send(new_data);
             self.SendNotification("Player "+self.id+" could no refuel at Base Station :( ")
 
         
@@ -153,7 +153,7 @@ class ServerChannel(Channel):
         new_data =self.GetReturnData()
         new_data.update({"response_action":GAME_OVER_FOR_CLIENT})
         #send this new information to all clients, they will just print this on their screens
-        self.send(new_data);
+        self.Send(new_data);
         self.SendNotification("Player "+self.id+" quit :( ")
         self._server.freePlot(data)
         self.SendGridStatus()
@@ -195,7 +195,7 @@ class ServerChannel(Channel):
             if action == LANDED_SUCCESSFULLY:
                 self.HandleSuccessLanding(data)
             elif action == BUY_FUEL:
-                self.BuyFuel(data)
+                self.BuyFuel()
             elif action == RETURN_TO_EARTH:
                 self.ReturnToEarth(data)
             elif action == CRASH_LANDED:

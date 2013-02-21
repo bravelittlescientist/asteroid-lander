@@ -34,11 +34,11 @@ class Client(ConnectionListener, Lander):
         print "event key down captured"
         self.fireRequest({"request_action":LANDED_SUCCESSFULLY, "points_scored": info})
     
-    def CrashLanded(self, info):
+    def CrashLanded(self, info=None):
         print "event key c captured"
         self.fireRequest({"request_action":CRASH_LANDED, "spaceship_crashed": info})
     
-    def BuyFuel(self, info):
+    def BuyFuel(self, info=" "):
         print "event key b captured"
         self.fireRequest({"request_action":BUY_FUEL, "buy_fuel": info})    
     
@@ -46,7 +46,11 @@ class Client(ConnectionListener, Lander):
         print "event key r captured", info
         self.fireRequest({"request_action":REQUEST_PLOT, "plot_type": info})
     
-    def QuitGame(self, info):
+    def ReturnToEarth(self, info=None):
+        print "event key e captured", info
+        self.fireRequest({"request_action":RETURN_TO_EARTH, "return_to_earth": info})
+    
+    def QuitGame(self, info=None):
         print "event key q captured"
         self.fireRequest({"request_action":QUIT_GAME, "quit_game": info})
         

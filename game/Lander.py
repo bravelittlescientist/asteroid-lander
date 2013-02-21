@@ -35,8 +35,10 @@ class Lander:
                     self.BuyFuel();
                 elif event.key == pygame.K_r:
                     self.RequestPlot(GOLD);
+                elif event.key == pygame.K_e:
+                    self.ReturnToEarth();
                 elif event.key == pygame.K_q:
-                    self.Quit();
+                    self.QuitGame();
                 else:
                     pass
             else:
