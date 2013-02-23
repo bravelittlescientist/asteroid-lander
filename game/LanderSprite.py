@@ -7,6 +7,8 @@ import math
 import pygame
 from pygame.sprite import Sprite
 
+from pgu import gui
+
 class LanderSprite(Sprite):
     """ The LunarLander spaceship sprit """
     image = pygame.image.load("images/spaceship-96.png")
@@ -46,6 +48,9 @@ class LanderSprite(Sprite):
 pygame.init()
 screen = pygame.display.set_mode((640, 640))
 pygame.mouse.set_visible(0)
+
+app = gui.App()
+
 lander = LanderSprite()
 background = pygame.Surface(screen.get_size())
 background = background.convert()
