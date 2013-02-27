@@ -2,6 +2,8 @@ import sys
 import pygame
 from pgu import gui
 
+from GameDataPanels import LeaderboardPanel, MineralPanel, PlotsPanel
+
 class LanderContainer(gui.Container):
     """
     This container is the main GUI for the Lander Game.
@@ -61,11 +63,6 @@ class LanderContainer(gui.Container):
     def draw_game(self, screen):
         #self.add(self.base_station_button, 100, 100)
         pass        
-
-        #self.base_station_button = gui.Button("Base Station", width=100, height=36)
-        #self.fuel_button = gui.Button("Buy Fuel", width=100, height=36)
-        #self.quit_button = gui.Button("Quit", width=100, height=36)
-        #self.title_menu = gui.Button("Asteroid Miner", width=200, height=36)
 
 if __name__ == "__main__":
     pygame.init()
