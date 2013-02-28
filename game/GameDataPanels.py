@@ -10,10 +10,10 @@ class GamePanel:
         self.y = y
         self.width = 200
         self.height = 164
-        self.placeholder = pygame.image.load("images/spaceship-96.png")
+        self.placeholder = pygame.image.load("images/placeholder.jpg")
 
     def draw(self, screen):
-        screen.blit(self.image, (x, y))
+        screen.blit(self.placeholder, (self.x, self.y))
 
 class LeaderboardPanel(GamePanel):
     def __init__(self, x, y):

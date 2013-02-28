@@ -1,13 +1,8 @@
-"""
-LanderSprite - A Sprite to represent the LunarLander ship
-"""
 import sys
 import math
 
 import pygame
 from pygame.sprite import Sprite
-
-from pgu import gui
 
 class LanderSprite(Sprite):
     """ The LunarLander spaceship sprit """
@@ -35,9 +30,6 @@ class LanderSprite(Sprite):
         self.rect.centerx = max(self.rect.centerx, 48)
         self.rect.centery = min(self.rect.centery, 640 - 48)
         self.rect.centery = max(self.rect.centery, 48)
-
-        #self.g_velocity = self.g * (ms/10000)
-        #self.rect.centery += self.g_velocity
 
     def set_x_velocity(self, xv):
         self.velocityx += xv

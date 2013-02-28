@@ -1,8 +1,11 @@
 import sys
+import math
 import pygame
+
 from pgu import gui
 
 from GameDataPanels import LeaderboardPanel, MineralPanel, PlotsPanel
+#from LanderCanvas import LanderSprite
 
 class LanderContainer(gui.Container):
     """
@@ -53,15 +56,20 @@ class LanderContainer(gui.Container):
         self.add(self.horizontal_speed_readout, 400, 360)
         self.add(self.vertical_speed_readout, 600, 360)
 
-        self.add(self.spaceship_points_leaderboard, 36, 400)
-        self.add(self.mineral_score_goal_box, 300, 400)
-        self.add(self.mining_plots_availability_indicator, 564, 400)
+        self.leaderboardPanel = LeaderboardPanel(36, 400)
+        self.mineralPanel = MineralPanel(300, 400)
+        self.plotsPanel = PlotsPanel(564, 400)
+        #self.add(self.spaceship_points_leaderboard, 36, 400)
+        #self.add(self.mineral_score_goal_box, 300, 400)
+        #self.add(self.mining_plots_availability_indicator, 564, 400)
 
         self.add(self.fuel_level_readout, 0, 564)
         self.add(self.weight_readout, 150, 564)
 
     def draw_game(self, screen):
-        #self.add(self.base_station_button, 100, 100)
+        self.leaderboardPanel.draw(screen)
+        self.mineralPanel.draw(screen)
+        self.plotsPanel.draw(screen)
         pass        
 
 if __name__ == "__main__":
