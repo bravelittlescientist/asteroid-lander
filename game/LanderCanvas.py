@@ -8,42 +8,90 @@ class LanderSprite(Sprite):
     """ The LunarLander spaceship sprit """
     image = pygame.image.load("images/spaceship-96.png")
     
-    def __init__(self):
+    def __init__(self, max_landing_velocity):
         pygame.sprite.Sprite.__init__(self)
+
         self.image = LanderSprite.image
         self.rect = self.image.get_rect()
-        self.rect.midtop = (320, 100)
-        self.velocityx = 0
-        self.velocityy = 0 
-        self.g = 1.622 # m/s^2, gravity on the moon
 
-    def update(self, ms):
-        # Update position due to gravity
+        self.position_x = 320
+        self.position_y = 96
+        self.rect.midbottom = (self.position_x, self.position_y)
 
-        # Update position due to movement 
-        self.rect.centerx += 10 * self.velocityx
-        self.rect.centery += 10 * self.velocityy
-        self.rect.centery += (self.g/10 * math.pow(float(ms/1000), 2)) * .5
+        self.landed = False
+        self.crashed = False
 
-        # Avoid going outside of bounds
+        self.gravity = 0.02
+        self.velocity_slowing = 0.01  
+        self.velocity_x = 0
+        self.velocity_y = 0
+    
+        self.moving_left = False;
+        self.moving_right = False;
+        self.thrusters = False;
+
+        self.max_landing_velocity = max_landing_velocity
+
+    def update_velocity(self):
+        """ Update velocities depending on which direction ship is moving """
+        # Set thruster (up/down) movement
+        if self.thrusters:
+            self.velocity_y -= self.gravity
+        else:
+            self.velocity_y += self.velocity_slowing
+
+        # Set left movement
+        if self.moving_left:
+            self.velocity_x -= self.gravity
+        else:
+            if self.velocity_x < 0:
+                self.velocity_x += self.velocity_slowing
+        
+        # Set right movement
+        if self.moving_right:
+            self.velocity_x += self.gravity
+        else:
+            if self.velocity_x > 0:
+                self.velocity_x -= self.velocity_slowing
+
+    def update(self):
+        """ Update the position of the lunar lander sprite based on current velocities """
+        # Update velocity based on movement state setting        
+        self.update_velocity()
+
+        # Update position due to velocity
+        self.position_x += self.velocity_x
+        self.position_y += self.velocity_y
+        self.rect.midbottom = (self.position_x, self.position_y)
+
+        # Avoid going out of bounds
         self.rect.centerx = min(self.rect.centerx, 640 - 48)
         self.rect.centerx = max(self.rect.centerx, 48)
         self.rect.centery = min(self.rect.centery, 640 - 48)
         self.rect.centery = max(self.rect.centery, 48)
 
-    def set_x_velocity(self, xv):
-        self.velocityx += xv
+    def draw(self, screen):
+        """ Draw lander sprite to existing game canvas """
+        screen.blit(self.image, self.rect)
 
-    def set_y_velocity(self, yv):
-        self.velocityy += yv
+    def set_thrusters(self, thrusters_on):
+        """ Up-arrow: Player uses thrusters to propel lander up """
+        self.thrusters = thrusters_on
 
+    def set_left_movement(self, left):
+        """ Left-arrow: Moving left or stopping left movement """
+        self.moving_left = left 
+
+    def set_right_movement(self, right):
+        """ Right-arrow: Moving right or stopping right movement """
+        self.moving_right = right        
+
+# Initialize game
 pygame.init()
 screen = pygame.display.set_mode((640, 640))
 pygame.mouse.set_visible(0)
 
-app = gui.App()
-
-lander = LanderSprite()
+lander = LanderSprite(5)
 background = pygame.Surface(screen.get_size())
 background = background.convert()
 background.fill((0, 0, 0))
@@ -52,38 +100,32 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: sys.exit()
         
-        # On Keypress, set movement speed.
+        # On Keypress, set movement state
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                lander.set_x_velocity(-1)
+                lander.set_left_movement(True)
             elif event.key == pygame.K_RIGHT:
-                lander.set_x_velocity(1)
+                lander.set_right_movement(True)
             elif event.key == pygame.K_UP:
-                lander.set_y_velocity(-1)
-            elif event.key == pygame.K_DOWN:
-                lander.set_y_velocity(1)
-
-        # On Keyrelease, set movement speed opposite
+                lander.set_thrusters(True)
+            
+        # On Keyrelease, release movement state setting
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
-                lander.set_x_velocity(1)
+                lander.set_left_movement(False)
             elif event.key == pygame.K_RIGHT:
-                lander.set_x_velocity(-1)
+                lander.set_right_movement(False)
             elif event.key == pygame.K_UP:
-                lander.set_y_velocity(1)
-            elif event.key == pygame.K_DOWN:
-                lander.set_y_velocity(-1)
+                lander.set_thrusters(False)
 
-    lander.update(pygame.time.get_ticks())
+    # Clear game canvas background
     screen.blit(background, (0, 0))
-    screen.blit(lander.image, lander.rect)
 
-    font = pygame.font.Font(None, 36)
-    text = font.render("Y: " + str(lander.rect.centery) + "m  T: " + str(pygame.time.get_ticks()) + " ms", 1, (250, 250, 250))
-    textpos = text.get_rect()
-    textpos.centerx = screen.get_rect().centerx
-    screen.blit(text, textpos)
+    # Update lander speed/position
+    lander.update()
+    lander.draw(screen)
 
+    # Update entire display
     pygame.display.flip()
 
 pygame.quit()
