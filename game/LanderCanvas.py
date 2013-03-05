@@ -8,7 +8,7 @@ class LanderSprite(Sprite):
     """ The LunarLander spaceship sprit """
     image = pygame.image.load("images/spaceship-96.png")
     
-    def __init__(self, max_landing_velocity):
+    def __init__(self):
         pygame.sprite.Sprite.__init__(self)
 
         self.image = LanderSprite.image
@@ -29,8 +29,6 @@ class LanderSprite(Sprite):
         self.moving_left = False;
         self.moving_right = False;
         self.thrusters = False;
-
-        self.max_landing_velocity = max_landing_velocity
 
     def update_velocity(self):
         """ Update velocities depending on which direction ship is moving """
@@ -85,12 +83,18 @@ class LanderSprite(Sprite):
         """ Right-arrow: Moving right or stopping right movement """
         self.moving_right = right        
 
+    def get_vertical_velocity(self):
+        return self.velocity_y
+
+    def get_horizontal_velocity(self):
+        return self.velocity_x
+
 # Initialize game
 pygame.init()
 screen = pygame.display.set_mode((640, 640))
 pygame.mouse.set_visible(0)
 
-lander = LanderSprite(5)
+lander = LanderSprite()
 background = pygame.Surface(screen.get_size())
 background = background.convert()
 background.fill((0, 0, 0))

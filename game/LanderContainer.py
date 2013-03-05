@@ -14,67 +14,68 @@ class LanderContainer(gui.Container):
     """
     def __init__(self):
         """
-        Game initialization: 800x600 screen for now
+        Game initialization: 800x800 screen for now
         """
-        gui.Container.__init__(self, width=800, height=600)
+        gui.Container.__init__(self, width=1024, height=800)
 
         # Initialize screen components: Title Menu
-        self.base_station_button = gui.Button("Base Station", width=150, height=36)
-        self.fuel_button = gui.Button("Buy Fuel", width=150, height=36)
-        self.quit_button = gui.Button("Quit", width=100, height=36)
-        self.title_menu = gui.Button("Asteroid Miner", width=150, height=36)
+        self.title_menu = gui.Button("Asteroid Miner", width=152, height=36)
+        self.base_station_button = gui.Button("Base Station", width=152, height=36)
+        self.fuel_button = gui.Button("Buy Fuel", width=152, height=36)
+        self.quit_button = gui.Button("Quit", width=96, height=36)   
 
         # Initialize screen components: Gameplay Canvas
-        self.gameplay_canvas = gui.Button("[CANVAS]", width=800, height=324,
+        self.gameplay_canvas = gui.Button("[CANVAS]", width=1024, height=524,
                 border=0)
 
         # Initialize screen components: Lander Readouts
-        self.altitude_readout = gui.Button("Altitude=800m", width=200, height=36)
-        self.horizontal_speed_readout = gui.Button("HSpeed: 0.0 m/s", width=200, height=36)
-        self.vertical_speed_readout = gui.Button("VSpeed: 0.0 m/s", width=200, height=36)
+        self.altitude_readout = gui.Button("Altitude = 800 m", width=256, height=36)
+        self.horizontal_speed_readout = gui.Button("Horizontal Speed: 0.0 m/s", width=256, height=36)
+        self.vertical_speed_readout = gui.Button("Vertical Speed: 0.0 m/s", width=256, height=36)
 
         # Initialize screen components: Mining Dashboard
         self.spaceship_points_leaderboard = gui.Button("[LEADERBOARD]",
-                width=200, height=164)
+                width=336, height=164)
         self.mineral_score_goal_box = gui.Button("[MINERAL SCORES]",
-                width=200, height=164)
+                width=336, height=164)
         self.mining_plots_availability_indicator = gui.Button("[PLOTS]",
-                width=200, height=164)
-        self.fuel_level_readout = gui.Button("Fuel: 1000 L", width=150,
+                width=336, height=164)
+        self.fuel_level_readout = gui.Button("Fuel: 1000 L", width=256,
                 height=36)
-        self.weight_readout = gui.Button("Weight: 500 tons", width=150,
+        self.weight_readout = gui.Button("Weight: 500 tons", width=256,
                 height=36) 
 
+        # Position top menu
         self.add(self.title_menu, 0, 0)
-        self.add(self.base_station_button, 250, 0)
-        self.add(self.fuel_button, 400, 0)
-        self.add(self.quit_button, 700, 0)
+        self.add(self.base_station_button, 360, 0)
+        self.add(self.fuel_button, 512, 0)
+        self.add(self.quit_button, 928, 0)
 
+        # Position canvas and game readouts
         self.add(self.gameplay_canvas, 0, 36)
+        self.add(self.altitude_readout, 0, 560)
+        self.add(self.horizontal_speed_readout, 256, 560)
+        self.add(self.vertical_speed_readout, 512, 560)
 
-        self.add(self.altitude_readout, 0, 360)
-        self.add(self.horizontal_speed_readout, 400, 360)
-        self.add(self.vertical_speed_readout, 600, 360)
+        # Position Gameplay info panels
+        self.leaderboardPanel = LeaderboardPanel(0, 596)
+        self.mineralPanel = MineralPanel(336, 596)
+        self.plotsPanel = PlotsPanel(672, 596)
 
-        self.leaderboardPanel = LeaderboardPanel(36, 400)
-        self.mineralPanel = MineralPanel(300, 400)
-        self.plotsPanel = PlotsPanel(564, 400)
-        #self.add(self.spaceship_points_leaderboard, 36, 400)
-        #self.add(self.mineral_score_goal_box, 300, 400)
-        #self.add(self.mining_plots_availability_indicator, 564, 400)
-
-        self.add(self.fuel_level_readout, 0, 564)
-        self.add(self.weight_readout, 150, 564)
+        self.add(self.fuel_level_readout, 0, 764)
+        self.add(self.weight_readout, 256, 764)
 
     def draw_game(self, screen):
+        # Update game panels
         self.leaderboardPanel.draw(screen)
         self.mineralPanel.draw(screen)
         self.plotsPanel.draw(screen)
-        pass        
+        
+        # Update game       
 
 if __name__ == "__main__":
     pygame.init()
-    screen = pygame.display.set_mode((800,600))
+    screen = pygame.display.set_mode((1024,800))
     app = gui.App()
     c = LanderContainer()
     app.init(c)
