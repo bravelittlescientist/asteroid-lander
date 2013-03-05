@@ -21,8 +21,8 @@ class LanderSprite(Sprite):
         self.landed = False
         self.crashed = False
 
-        self.gravity = 0.02
-        self.velocity_slowing = 0.01  
+        self.gravity = 0.08
+        self.velocity_slowing = 0.06 
         self.velocity_x = 0
         self.velocity_y = 0
     
