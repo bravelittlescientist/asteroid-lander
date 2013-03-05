@@ -60,15 +60,14 @@ class LanderSprite(Sprite):
         self.update_velocity()
 
         # Update position due to velocity
+        if self.position_x + self.velocity_x < 0 + 48 or self.position_x + self.velocity_x > 640 - 48:
+            self.velocity_x = 0
         self.position_x += self.velocity_x
+
+        if self.position_y + self.velocity_y < 96 or self.position_y + self.velocity_y > 640:
+            self.velocity_y = 0
         self.position_y += self.velocity_y
         self.rect.midbottom = (self.position_x, self.position_y)
-
-        # Avoid going out of bounds
-        self.rect.centerx = min(self.rect.centerx, 640 - 48)
-        self.rect.centerx = max(self.rect.centerx, 48)
-        self.rect.centery = min(self.rect.centery, 640 - 48)
-        self.rect.centery = max(self.rect.centery, 48)
 
     def draw(self, screen):
         """ Draw lander sprite to existing game canvas """
