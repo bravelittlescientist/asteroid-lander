@@ -8,14 +8,14 @@ class LanderSprite(Sprite):
     """ The LunarLander spaceship sprit """
     image = pygame.image.load("images/spaceship-96.png")
     
-    def __init__(self):
+    def __init__(self, game_left_limit, game_top_limit, game_width, game_height):
         pygame.sprite.Sprite.__init__(self)
 
         self.image = LanderSprite.image
         self.rect = self.image.get_rect()
 
-        self.position_x = 320
-        self.position_y = 96
+        self.position_x = game_left_limit + game_width/2
+        self.position_y = game_top_limit + 96
         self.rect.midbottom = (self.position_x, self.position_y)
 
         self.landed = False
@@ -29,6 +29,11 @@ class LanderSprite(Sprite):
         self.moving_left = False;
         self.moving_right = False;
         self.thrusters = False;
+    
+        self.left_limit = game_left_limit
+        self.top_limit = game_top_limit
+        self.right_limit = self.left_limit + game_width
+        self.bottom_limit = self.top_limit + game_height
 
     def update_velocity(self):
         """ Update velocities depending on which direction ship is moving """
@@ -58,11 +63,11 @@ class LanderSprite(Sprite):
         self.update_velocity()
 
         # Update position due to velocity
-        if self.position_x + self.velocity_x < 0 + 48 or self.position_x + self.velocity_x > 640 - 48:
+        if (self.position_x + self.velocity_x) < (self.left_limit + 48) or (self.position_x + self.velocity_x) > (self.right_limit - 48):
             self.velocity_x = 0
         self.position_x += self.velocity_x
 
-        if self.position_y + self.velocity_y < 96 or self.position_y + self.velocity_y > 640:
+        if self.position_y + self.velocity_y < self.top_limit + 96 or self.position_y + self.velocity_y > self.bottom_limit:
             self.velocity_y = 0
         self.position_y += self.velocity_y
         self.rect.midbottom = (self.position_x, self.position_y)
@@ -92,9 +97,9 @@ class LanderSprite(Sprite):
 # Initialize game
 pygame.init()
 screen = pygame.display.set_mode((640, 640))
-pygame.mouse.set_visible(0)
+#pygame.mouse.set_visible(0)
 
-lander = LanderSprite()
+lander = LanderSprite(40, 100, 560, 400)
 background = pygame.Surface(screen.get_size())
 background = background.convert()
 background.fill((0, 0, 0))
