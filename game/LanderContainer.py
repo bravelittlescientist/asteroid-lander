@@ -5,7 +5,7 @@ import pygame
 from pgu import gui
 
 from GameDataPanels import LeaderboardPanel, MineralPanel, PlotsPanel
-#from LanderCanvas import LanderSprite
+from LanderCanvas import LanderSprite
 
 class LanderContainer(gui.Container):
     """
@@ -25,8 +25,7 @@ class LanderContainer(gui.Container):
         self.quit_button = gui.Button("Quit", width=96, height=36)   
 
         # Initialize screen components: Gameplay Canvas
-        self.gameplay_canvas = gui.Button("[CANVAS]", width=1024, height=524,
-                border=0)
+        self.lander = LanderSprite(0, 36, 1024, 524)
 
         # Initialize screen components: Lander Readouts
         self.altitude_readout = gui.Button("Altitude = 800 m", width=256, height=36)
@@ -52,7 +51,6 @@ class LanderContainer(gui.Container):
         self.add(self.quit_button, 928, 0)
 
         # Position canvas and game readouts
-        self.add(self.gameplay_canvas, 0, 36)
         self.add(self.altitude_readout, 0, 560)
         self.add(self.horizontal_speed_readout, 256, 560)
         self.add(self.vertical_speed_readout, 512, 560)
@@ -65,11 +63,15 @@ class LanderContainer(gui.Container):
         self.add(self.fuel_level_readout, 0, 764)
         self.add(self.weight_readout, 256, 764)
 
+    def key_event_handler(self, event):
+        self.lander.on_key_event(event)
+
     def draw_game(self, screen):
         # Update game panels
         self.leaderboardPanel.draw(screen)
         self.mineralPanel.draw(screen)
         self.plotsPanel.draw(screen)
+        self.lander.draw(screen)
         
         # Update game       
 
@@ -87,10 +89,17 @@ if __name__ == "__main__":
     running = True
 
     while running:
+        # Key event handling        
         for e in pygame.event.get():
             if e.type is pygame.QUIT:
                 running = False
+            elif e.type == pygame.KEYDOWN or e.type == pygame.KEYUP:
+                c.key_event_handler(e)
+        
         screen.blit(background, (0, 0))
         c.draw_game(screen)
         app.paint(screen)
         pygame.display.flip()
+
+    # Exit gracefully
+    pygame.quit()

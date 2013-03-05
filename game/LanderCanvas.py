@@ -74,8 +74,10 @@ class LanderSprite(Sprite):
 
     def draw(self, screen):
         """ Draw lander sprite to existing game canvas """
+        self.update()
         screen.blit(self.image, self.rect)
 
+    # Management movement
     def set_thrusters(self, thrusters_on):
         """ Up-arrow: Player uses thrusters to propel lander up """
         self.thrusters = thrusters_on
@@ -94,46 +96,19 @@ class LanderSprite(Sprite):
     def get_horizontal_velocity(self):
         return self.velocity_x
 
-# Initialize game
-pygame.init()
-screen = pygame.display.set_mode((640, 640))
-#pygame.mouse.set_visible(0)
-
-lander = LanderSprite(40, 100, 560, 400)
-background = pygame.Surface(screen.get_size())
-background = background.convert()
-background.fill((0, 0, 0))
-
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT: sys.exit()
-        
-        # On Keypress, set movement state
-        elif event.type == pygame.KEYDOWN:
+    def on_key_event(self, event):
+        # Handle key up/down events
+        if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                lander.set_left_movement(True)
+                self.set_left_movement(True)
             elif event.key == pygame.K_RIGHT:
-                lander.set_right_movement(True)
+                self.set_right_movement(True)
             elif event.key == pygame.K_UP:
-                lander.set_thrusters(True)
-            
-        # On Keyrelease, release movement state setting
+                self.set_thrusters(True) 
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
-                lander.set_left_movement(False)
+                self.set_left_movement(False)
             elif event.key == pygame.K_RIGHT:
-                lander.set_right_movement(False)
+                self.set_right_movement(False)
             elif event.key == pygame.K_UP:
-                lander.set_thrusters(False)
-
-    # Clear game canvas background
-    screen.blit(background, (0, 0))
-
-    # Update lander speed/position
-    lander.update()
-    lander.draw(screen)
-
-    # Update entire display
-    pygame.display.flip()
-
-pygame.quit()
+                self.set_thrusters(False)   
