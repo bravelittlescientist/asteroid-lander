@@ -22,14 +22,14 @@ class LanderContainer(gui.Container):
         # Initialize screen components: Title Menu
         self.title_menu = gui.TextArea(value="Asteroid Miner", width=152, height=36, focusable=False)
         
-        self.base_station_button = gui.Button("Returning to Base Station", width=152, height=36)
+        self.base_station_button = gui.Button("Returning to Base Station", width=152, height=36)#, background=(208, 208, 208))
 
         self.notify_value = "NOTIFY"
         self.notification_zone = gui.TextArea(value=self.notify_value, width=256, height=36, focusable=False)
         #self.base_station_button.connect(gui.CLICK, self.on_click_base_station, None)
 
         self.fuel_button = gui.Button("Buying Fuel", width=152, height=36)
-       # self.fuel_button.connect(gui.CLICK, self.on_click_buy_fuel, None)
+        #self.fuel_button.connect(gui.CLICK, self.triggerBuyFuel, self.fuel_button)
 
         self.quit_button = gui.Button("Quit", width=96, height=36)   
         #self.quit_button.connect(gui.CLICK, self.exit, None)
@@ -69,11 +69,25 @@ class LanderContainer(gui.Container):
         self.add(self.fuel_level_readout, 0, 764)
         self.add(self.weight_readout, 256, 764)
 
+    def clicked_in_button(self, button, position):
+        return button.rect.collidepoint(position)
+
+    def mouse_event_handler(self,event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+
+            if self.clicked_in_button(self.base_station_button, pos): self.triggerBaseStation()
+            elif self.clicked_in_button(self.fuel_button, pos): self.triggerBuyFuel()
+            elif self.clicked_in_button(self.quit_button, pos): self.quit()
+
+        elif event.type == pygame.MOUSEBUTTONUP:
+            pass
+
     def key_event_handler(self, event):
         if event.key == pygame.K_b:
             c.triggerBaseStation()
         elif event.key == pygame.K_f:
-            c.triggerBuyFuel()    
+            c.triggerBuyFuel()       
         else:     
             self.lander.on_key_event(event)
       
@@ -81,8 +95,8 @@ class LanderContainer(gui.Container):
         # Update game
         self.lander.draw(screen)
         status = self.lander.get_status()
-        if status != "RUNNING":
-            self.updateNotify(status) 
+        #if status != "RUNNING":
+        #    self.updateNotify(status) 
         
         # Update Readouts
         self.altitude_readout.value = "Altitude: " + str(self.lander.get_vertical_position()) + " m"
@@ -99,10 +113,10 @@ class LanderContainer(gui.Container):
     def updateNotify(self, notif):
         self.notify_value = notif
 
-    def exit(self, param):
+    def quit(self):
+        # TODO Send player quitting message here        
         sys.exit(0)     
         
-
 if __name__ == "__main__":
     pygame.init()
     screen = pygame.display.set_mode((1024,800), SWSURFACE)
@@ -126,7 +140,8 @@ if __name__ == "__main__":
                 done = True
             elif e.type == pygame.KEYDOWN or e.type == pygame.KEYUP:
                 c.key_event_handler(e)
-            #app.event(e)
+            elif e.type == pygame.MOUSEBUTTONDOWN or e.type == pygame.MOUSEBUTTONUP:         
+                c.mouse_event_handler(e)
 
         screen.blit(background, (0, 0))
         c.draw_game(screen)
