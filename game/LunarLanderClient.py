@@ -56,11 +56,12 @@ class Client(ConnectionListener, Lander):
         ### Network event callbacks ###
         ###############################
     
-    def Network_initial(self, data):
-        print data
+    def Network_acknowledge(self, data):
+        print "Received Acknowledge from server" , data
         self.players = data['players']
     
-    def Network_players(self, data):
+    def Network_StartGame(self, data):
+        print "Game Started!"
         self.playersLabel = str(len(data['players'])) + " players"
     
     def Network_response(self, data):
