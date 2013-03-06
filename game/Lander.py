@@ -1,17 +1,44 @@
 from game.Constants import *
 from os import environ
 from sys import exit
+
 import pygame
+from pygame.locals import *
+from LanderContainer import LanderContainer
+from pgu import gui
 
-SCREENSIZE = (640, 480)
-
-environ['SDL_VIDEO_CENTERED'] = '1'
 pygame.init()
-screen = pygame.display.set_mode(SCREENSIZE)
+screen = pygame.display.set_mode((1024,800), SWSURFACE)
+app = gui.App()
 
-pygame.font.init()
-fnt = pygame.font.SysFont("Arial", 14)
-txtpos = (100, 90)
+c = LanderContainer()
+lc = gui.Container(align=-1,valign=-1)    
+lc.add(c, 0, 0)
+
+app.init(lc)
+done = False
+
+background = pygame.Surface(screen.get_size())
+background = background.convert()
+background.fill((0, 0, 0)) 
+
+while not done:
+    # Key event handling        
+    #for e in pygame.event.get():
+    #    if e.type is pygame.QUIT:
+    #        done = True
+    #    elif e.type == pygame.KEYDOWN or e.type == pygame.KEYUP:
+    #        c.key_event_handler(e)
+    #    elif e.type == pygame.MOUSEBUTTONDOWN or e.type == pygame.MOUSEBUTTONUP:         
+    #        c.mouse_event_handler(e)
+        
+    screen.blit(background, (0, 0))
+    c.draw_game(screen)
+    app.paint(screen)
+    pygame.display.flip()
+
+# Exit gracefully
+pygame.quit()
 
 class Lander:
 
@@ -48,17 +75,3 @@ class Lander:
                     pass
             else:
                 pass
-
-    def Hey(self):
-        #print "itna to chal"
-        self.HelloWorld()
-
-    def Draw(self, linesets):
-        screen.fill([255, 255, 255])
-        txt = fnt.render(self.statusLabel, 1, (0, 0, 0))
-        screen.blit(fnt.render(self.statusLabel, 1, (0, 0, 0)), [10, 10])
-        txt = fnt.render(self.playersLabel, 1, (0, 0, 0))
-        screen.blit(fnt.render(self.playersLabel, 1, (0, 0, 0)), [10, 20])
-        [[pygame.draw.aalines(screen, c, False, l) for l in lines if len(l) > 1] for c, lines in linesets]
-        pygame.display.flip()
-        self.frame += 1

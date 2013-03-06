@@ -118,8 +118,8 @@ class LanderContainer(gui.Container):
     def quit(self):
         # TODO Send player quitting message here        
         sys.exit(0)     
-        
-if __name__ == "__main__":
+      
+def running_offline():
     pygame.init()
     screen = pygame.display.set_mode((1024,800), SWSURFACE)
     app = gui.App()
@@ -152,3 +152,7 @@ if __name__ == "__main__":
 
     # Exit gracefully
     pygame.quit()
+  
+if __name__ == "__main__":
+    pass
+    #running_offline()
