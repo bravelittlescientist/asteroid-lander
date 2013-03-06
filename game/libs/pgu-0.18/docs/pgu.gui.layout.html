@@ -1,0 +1,70 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module pgu.gui.layout</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="pgu.html"><font color="#ffffff">pgu</font></a>.<a href="pgu.gui.html"><font color="#ffffff">gui</font></a>.layout</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/genia/Projects/LunarLanderProject/application/asteroid-lander/game/libs/pgu-0.18/pgu/gui/layout.py">/home/genia/Projects/LunarLanderProject/application/asteroid-lander/game/libs/pgu-0.18/pgu/gui/layout.py</a></font></td></tr></table>
+    <p><tt>Document&nbsp;layout&nbsp;engine.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="pgu.gui.layout.html#Layout">Layout</a>
+</font></dt></dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Layout">class <strong>Layout</strong></a></font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;document&nbsp;layout&nbsp;engine.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Layout-__init__"><strong>__init__</strong></a>(self, rect<font color="#909090">=None</font>)</dt><dd><tt>initialize&nbsp;the&nbsp;object&nbsp;with&nbsp;the&nbsp;size&nbsp;of&nbsp;the&nbsp;box.</tt></dd></dl>
+
+<dl><dt><a name="Layout-add"><strong>add</strong></a>(self, e)</dt><dd><tt>Add&nbsp;a&nbsp;document&nbsp;element&nbsp;to&nbsp;the&nbsp;layout.<br>
+&nbsp;<br>
+The&nbsp;document&nbsp;element&nbsp;may&nbsp;be<br>
+*&nbsp;a&nbsp;tuple&nbsp;(w,h)&nbsp;if&nbsp;it&nbsp;is&nbsp;a&nbsp;whitespace&nbsp;element<br>
+*&nbsp;a&nbsp;tuple&nbsp;(0,h)&nbsp;if&nbsp;it&nbsp;is&nbsp;a&nbsp;linebreak&nbsp;element<br>
+*&nbsp;an&nbsp;integer&nbsp;-1,0,1&nbsp;if&nbsp;it&nbsp;is&nbsp;a&nbsp;command&nbsp;to&nbsp;start&nbsp;a&nbsp;new&nbsp;block&nbsp;of&nbsp;elements&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;that&nbsp;are&nbsp;aligned&nbsp;either&nbsp;left,center,&nbsp;or&nbsp;right.<br>
+*&nbsp;an&nbsp;object&nbsp;with&nbsp;a&nbsp;.rect&nbsp;(for&nbsp;size)&nbsp;--&nbsp;such&nbsp;as&nbsp;a&nbsp;word&nbsp;element<br>
+*&nbsp;an&nbsp;object&nbsp;with&nbsp;a&nbsp;.rect&nbsp;(for&nbsp;size)&nbsp;and&nbsp;.align&nbsp;--&nbsp;such&nbsp;as&nbsp;an&nbsp;image&nbsp;element</tt></dd></dl>
+
+<dl><dt><a name="Layout-do_align"><strong>do_align</strong></a>(self, e)</dt></dl>
+
+<dl><dt><a name="Layout-do_block"><strong>do_block</strong></a>(self, align<font color="#909090">=-1</font>)</dt></dl>
+
+<dl><dt><a name="Layout-do_br"><strong>do_br</strong></a>(self, h)</dt></dl>
+
+<dl><dt><a name="Layout-do_item"><strong>do_item</strong></a>(self, e)</dt></dl>
+
+<dl><dt><a name="Layout-do_space"><strong>do_space</strong></a>(self, e)</dt></dl>
+
+<dl><dt><a name="Layout-getleft"><strong>getleft</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Layout-getright"><strong>getright</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Layout-init"><strong>init</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Layout-line"><strong>line</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Layout-resize"><strong>resize</strong></a>(self)</dt><dd><tt>Resize&nbsp;the&nbsp;layout.<br>
+&nbsp;<br>
+This&nbsp;method&nbsp;recalculates&nbsp;the&nbsp;position&nbsp;of&nbsp;all&nbsp;document&nbsp;elements&nbsp;after&nbsp;<br>
+they&nbsp;have&nbsp;been&nbsp;added&nbsp;to&nbsp;the&nbsp;document.&nbsp;&nbsp;.rect.x,y&nbsp;will&nbsp;be&nbsp;updated&nbsp;for<br>
+all&nbsp;objects.</tt></dd></dl>
+
+</td></tr></table></td></tr></table>
+</body></html>

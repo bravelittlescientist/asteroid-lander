@@ -2,19 +2,19 @@ import sys
 from time import sleep
 
 from PodSixNet.Connection import connection, ConnectionListener
-from Lander import Lander
+from SpaceshipViewer import SpaceshipViewer
 from game.Constants import *
 
-class Client(ConnectionListener, Lander):
+class Client(ConnectionListener, SpaceshipViewer):
     def __init__(self, host, port):
         self.Connect((host, port))
         self.players = {}
-        Lander.__init__(self)
+        SpaceshipViewer.__init__(self)
     
     def Loop(self):
         self.Pump()
         connection.Pump()
-        self.Events()
+        self.GameLoop()
     
         if "connecting" in self.statusLabel:
             self.statusLabel = "connecting" + ("." * ((self.frame / 30) % 4))
@@ -56,12 +56,15 @@ class Client(ConnectionListener, Lander):
         ### Network event callbacks ###
         ###############################
     
-    def Network_initial(self, data):
-        print data
+    def Network_acknowledge(self, data):
+        print "Received Acknowledge from server" , data
         self.players = data['players']
-    
-    def Network_players(self, data):
+        self.notify_ui("Acknowledged")
+
+    def Network_StartGame(self, data):
+        print "Game Started!"
         self.playersLabel = str(len(data['players'])) + " players"
+        self.c.game_ready()
     
     def Network_response(self, data):
         print "data in network", data
@@ -125,3 +128,4 @@ else:
     while 1:
         c.Loop()
         sleep(0.001)
+    
