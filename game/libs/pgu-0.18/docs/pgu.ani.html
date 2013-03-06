@@ -1,0 +1,53 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module pgu.ani</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="pgu.html"><font color="#ffffff">pgu</font></a>.ani</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/genia/Projects/LunarLanderProject/application/asteroid-lander/game/libs/pgu-0.18/pgu/ani.py">/home/genia/Projects/LunarLanderProject/application/asteroid-lander/game/libs/pgu-0.18/pgu/ani.py</a></font></td></tr></table>
+    <p><tt>animation&nbsp;loading&nbsp;and&nbsp;manipulating&nbsp;functions.<br>
+&nbsp;<br>
+Please&nbsp;note&nbsp;that&nbsp;this&nbsp;file&nbsp;is&nbsp;alpha,&nbsp;and&nbsp;is&nbsp;subject&nbsp;to&nbsp;modification&nbsp;in<br>
+future&nbsp;versions&nbsp;of&nbsp;pgu!</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="pygame.html">pygame</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-ani_load"><strong>ani_load</strong></a>(tv, name, img, size, shape, parts)</dt><dd><tt>Load&nbsp;an&nbsp;animation&nbsp;from&nbsp;an&nbsp;image<br>
+&nbsp;<br>
+Arguments:&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;tv&nbsp;--&nbsp;vid&nbsp;to&nbsp;load&nbsp;into<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;--&nbsp;prefix&nbsp;name&nbsp;to&nbsp;give&nbsp;the&nbsp;images<br>
+&nbsp;&nbsp;&nbsp;&nbsp;image&nbsp;--&nbsp;image&nbsp;to&nbsp;load&nbsp;anis&nbsp;from<br>
+&nbsp;&nbsp;&nbsp;&nbsp;size&nbsp;--&nbsp;w,h&nbsp;size&nbsp;of&nbsp;image<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shape&nbsp;--&nbsp;shape&nbsp;of&nbsp;image&nbsp;(usually&nbsp;a&nbsp;subset&nbsp;of&nbsp;0,0,w,h)&nbsp;used&nbsp;for&nbsp;collision&nbsp;detection<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parts&nbsp;--&nbsp;list&nbsp;of&nbsp;parts&nbsp;to&nbsp;divide&nbsp;the&nbsp;animation&nbsp;into&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;example&nbsp;parts&nbsp;=&nbsp;[4,5]&nbsp;would&nbsp;yield&nbsp;4&nbsp;animations&nbsp;5&nbsp;frames&nbsp;long,&nbsp;20&nbsp;total<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;example&nbsp;parts&nbsp;=&nbsp;[a,b,c]&nbsp;would&nbsp;yield&nbsp;...&nbsp;images['name.a.b.c']&nbsp;...,&nbsp;a*b*c&nbsp;total</tt></dd></dl>
+ <dl><dt><a name="-image_rotate"><strong>image_rotate</strong></a>(tv, name, img, shape, angles, diff<font color="#909090">=0</font>)</dt><dd><tt>Rotate&nbsp;an&nbsp;image&nbsp;and&nbsp;put&nbsp;it&nbsp;into&nbsp;tv.images<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;tv&nbsp;--&nbsp;vid&nbsp;to&nbsp;load&nbsp;into<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;--&nbsp;prefix&nbsp;name&nbsp;to&nbsp;give&nbsp;the&nbsp;images<br>
+&nbsp;&nbsp;&nbsp;&nbsp;image&nbsp;--&nbsp;image&nbsp;to&nbsp;load&nbsp;anis&nbsp;from<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shape&nbsp;--&nbsp;shape&nbsp;fimage&nbsp;(usually&nbsp;a&nbsp;subset&nbsp;of&nbsp;0,0,w,h)&nbsp;used&nbsp;for&nbsp;collision&nbsp;detection<br>
+&nbsp;&nbsp;&nbsp;&nbsp;angles&nbsp;--&nbsp;a&nbsp;list&nbsp;of&nbsp;angles&nbsp;to&nbsp;render&nbsp;in&nbsp;degrees<br>
+&nbsp;&nbsp;&nbsp;&nbsp;diff&nbsp;--&nbsp;a&nbsp;number&nbsp;to&nbsp;add&nbsp;to&nbsp;the&nbsp;angles,&nbsp;to&nbsp;correct&nbsp;for&nbsp;source&nbsp;image&nbsp;not&nbsp;actually&nbsp;being&nbsp;at&nbsp;0&nbsp;degrees</tt></dd></dl>
+</td></tr></table>
+</body></html>
