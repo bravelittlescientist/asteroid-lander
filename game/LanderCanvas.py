@@ -71,8 +71,6 @@ class LanderSprite(Sprite):
             else: self.landed = True
         else:
             self.position_y += self.velocity_y
-                   
-        self.position_y += self.velocity_y
 
         if (self.position_x + self.velocity_x) < (self.left_limit + 48) or (self.position_x + self.velocity_x) > (self.right_limit - 48):
             self.velocity_x = 0

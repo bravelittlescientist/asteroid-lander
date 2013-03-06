@@ -22,13 +22,13 @@ class LanderContainer(gui.Container):
         # Initialize screen components: Title Menu
         self.title_menu = gui.TextArea(value="Asteroid Miner", width=152, height=36, focusable=False)
         
-        self.base_station_button = gui.Button("Base Station", width=152, height=36)
+        self.base_station_button = gui.Button("Returning to Base Station", width=152, height=36)
 
         self.notify_value = "NOTIFY"
         self.notification_zone = gui.TextArea(value=self.notify_value, width=256, height=36, focusable=False)
         #self.base_station_button.connect(gui.CLICK, self.on_click_base_station, None)
 
-        self.fuel_button = gui.Button("Buy Fuel", width=152, height=36)
+        self.fuel_button = gui.Button("Buying Fuel", width=152, height=36)
        # self.fuel_button.connect(gui.CLICK, self.on_click_buy_fuel, None)
 
         self.quit_button = gui.Button("Quit", width=96, height=36)   
@@ -48,12 +48,12 @@ class LanderContainer(gui.Container):
 
         # Position top menu
         self.add(self.title_menu, 0, 0)
-        #self.add(self.base_station_button, 360, 0)
-        #self.add(self.fuel_button, 512, 0)
-        #self.add(self.quit_button, 928, 0)
+        self.add(self.base_station_button, 360, 0)
+        self.add(self.fuel_button, 512, 0)
+        self.add(self.quit_button, 928, 0)
 
         # Position canvas and game readouts
-        self.add(self.notification_zone, 768, 0)
+        self.add(self.notification_zone, 768, 36)
         self.add(self.altitude_readout, 0, 560)
         self.add(self.horizontal_speed_readout, 360, 560)
         self.add(self.vertical_speed_readout, 720, 560)

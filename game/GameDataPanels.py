@@ -28,10 +28,15 @@ class LeaderboardPanel(GamePanel):
         self.addRow("Constellation", 8)
         self.addRow("DeepSpace", 6)
 
+        #[] {}
+
     def addRow(self, ship, score):
         self.tr()
         self.td(gui.Label(ship, color=self.fg), colspan=2)
         self.td(gui.Label(str(score), color=self.fg), colspan=1)
+
+    #def updateLeaderboard(self, player_score_list):
+        
 
 class MineralPanel(GamePanel):
     def __init__(self, x, y):
@@ -60,8 +65,6 @@ class MineralPanel(GamePanel):
         self.td(gui.Label(str(6), color=self.fg), colspan=1)
         self.td(gui.Label(str(8), color=self.fg), colspan=1)
         self.td(gui.Label(str(10), color=self.fg), colspan=1)  
-
-        self.setValue(gui.Label("test", color=self.fg), 0, 0)
 
 class PlotsPanel(GamePanel):
     def __init__(self, x, y):
