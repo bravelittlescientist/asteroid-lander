@@ -222,34 +222,34 @@ def decode_int(x, f):
     if x[f] == '-':
         if x[f + 1] == '0':
             raise ValueError
-    elif x[f] == '0' and newf != f+1:
+    elif x[f] == '0' and newf != f + 1:
         raise ValueError
-    return (n, newf+1)
+    return (n, newf + 1)
 
 def decode_intb(x, f):
     f += 1
-    return (struct.unpack('!b', x[f:f+1])[0], f+1)
+    return (struct.unpack('!b', x[f:f + 1])[0], f + 1)
 
 def decode_inth(x, f):
     f += 1
-    return (struct.unpack('!h', x[f:f+2])[0], f+2)
+    return (struct.unpack('!h', x[f:f + 2])[0], f + 2)
 
 def decode_intl(x, f):
     f += 1
-    return (struct.unpack('!l', x[f:f+4])[0], f+4)
+    return (struct.unpack('!l', x[f:f + 4])[0], f + 4)
 
 def decode_intq(x, f):
     f += 1
-    return (struct.unpack('!q', x[f:f+8])[0], f+8)
+    return (struct.unpack('!q', x[f:f + 8])[0], f + 8)
 
 def decode_float(x, f):
     f += 1
     if FLOAT_BITS == 32:
-        n = struct.unpack('!f', x[f:f+4])[0]
-        return (n, f+4)
+        n = struct.unpack('!f', x[f:f + 4])[0]
+        return (n, f + 4)
     elif FLOAT_BITS == 64:
-        n = struct.unpack('!d', x[f:f+8])[0]
-        return (n, f+8)
+        n = struct.unpack('!d', x[f:f + 8])[0]
+        return (n, f + 8)
     else:
         raise ValueError
 
@@ -259,40 +259,40 @@ def decode_string(x, f):
         n = int(x[f:colon])
     except (OverflowError, ValueError):
         n = long(x[f:colon])
-    if x[f] == '0' and colon != f+1:
+    if x[f] == '0' and colon != f + 1:
         raise ValueError
     colon += 1
-    return (b64decode(x[colon:colon+n]), colon+n)
+    return (b64decode(x[colon:colon + n]), colon + n)
 
 def decode_list(x, f):
-    r, f = [], f+1
+    r, f = [], f + 1
     while x[f] != CHR_TERM:
         v, f = decode_func[x[f]](x, f)
         r.append(v)
     return (r, f + 1)
 
 def decode_tuple(x, f):
-    r, f = [], f+1
+    r, f = [], f + 1
     while x[f] != CHR_TERM:
         v, f = decode_func[x[f]](x, f)
         r.append(v)
     return (tuple(r), f + 1)
 
 def decode_dict(x, f):
-    r, f = {}, f+1
+    r, f = {}, f + 1
     while x[f] != CHR_TERM:
         k, f = decode_func[x[f]](x, f)
         r[k], f = decode_func[x[f]](x, f)
     return (r, f + 1)
 
 def decode_true(x, f):
-  return (True, f+1)
+  return (True, f + 1)
 
 def decode_false(x, f):
-  return (False, f+1)
+  return (False, f + 1)
 
 def decode_none(x, f):
-  return (None, f+1)
+  return (None, f + 1)
 
 def decode_instance(x, f):
     f += 1
@@ -302,7 +302,7 @@ def decode_instance(x, f):
         r = serializable[v[0]](*v[1:])
     else:
         raise NotRegistered(v[0])
-    return (r, f+1)
+    return (r, f + 1)
 
 decode_func = {}
 decode_func['0'] = decode_string
@@ -332,64 +332,64 @@ decode_func[CHR_INSTANCE] = decode_instance
 def make_fixed_length_string_decoders():
     def make_decoder(slen):
         def f_fixed_string(x, f):
-            return (b64decode(x[f+1:f+1+slen]), f+1+slen)
+            return (b64decode(x[f + 1:f + 1 + slen]), f + 1 + slen)
         return f_fixed_string
     for i in range(STR_FIXED_COUNT):
-        decode_func[chr(STR_FIXED_START+i)] = make_decoder(i)
+        decode_func[chr(STR_FIXED_START + i)] = make_decoder(i)
 
 make_fixed_length_string_decoders()
 
 def make_fixed_length_list_decoders():
     def make_decoder(slen):
         def f_fixed_list(x, f):
-            r, f = [], f+1
+            r, f = [], f + 1
             for i in range(slen):
                 v, f = decode_func[x[f]](x, f)
                 r.append(v)
             return (r, f)
         return f_fixed_list
     for i in range(LIST_FIXED_COUNT):
-        decode_func[chr(LIST_FIXED_START+i)] = make_decoder(i)
+        decode_func[chr(LIST_FIXED_START + i)] = make_decoder(i)
 
 make_fixed_length_list_decoders()
 
 def make_fixed_length_tuple_decoders():
     def make_decoder(slen):
         def f_fixed_tuple(x, f):
-            r, f = [], f+1
+            r, f = [], f + 1
             for i in range(slen):
                 v, f = decode_func[x[f]](x, f)
                 r.append(v)
             return (tuple(r), f)
         return f_fixed_tuple
     for i in range(TUPLE_FIXED_COUNT):
-        decode_func[chr(TUPLE_FIXED_START+i)] = make_decoder(i)
+        decode_func[chr(TUPLE_FIXED_START + i)] = make_decoder(i)
 
 make_fixed_length_tuple_decoders()
 
 def make_fixed_length_int_decoders():
     def make_decoder(j):
         def f(x, f):
-            return (j, f+1)
+            return (j, f + 1)
         return f
     for i in range(INT_POS_FIXED_COUNT):
-        decode_func[chr(INT_POS_FIXED_START+i)] = make_decoder(i)
+        decode_func[chr(INT_POS_FIXED_START + i)] = make_decoder(i)
     for i in range(INT_NEG_FIXED_COUNT):
-        decode_func[chr(INT_NEG_FIXED_START+i)] = make_decoder(-1-i)
+        decode_func[chr(INT_NEG_FIXED_START + i)] = make_decoder(-1 - i)
 
 make_fixed_length_int_decoders()
 
 def make_fixed_length_dict_decoders():
     def make_decoder(slen):
         def f(x, f):
-            r, f = {}, f+1
+            r, f = {}, f + 1
             for j in range(slen):
                 k, f = decode_func[x[f]](x, f)
                 r[k], f = decode_func[x[f]](x, f)
             return (r, f)
         return f
     for i in range(DICT_FIXED_COUNT):
-        decode_func[chr(DICT_FIXED_START+i)] = make_decoder(i)
+        decode_func[chr(DICT_FIXED_START + i)] = make_decoder(i)
 
 make_fixed_length_dict_decoders()
 
@@ -404,9 +404,9 @@ def loads(x):
 
 def encode_int(x, r):
     if 0 <= x < INT_POS_FIXED_COUNT:
-        r.append(chr(INT_POS_FIXED_START+x))
+        r.append(chr(INT_POS_FIXED_START + x))
     elif -INT_NEG_FIXED_COUNT <= x < 0:
-        r.append(chr(INT_NEG_FIXED_START-1-x))
+        r.append(chr(INT_NEG_FIXED_START - 1 - x))
     elif -128 <= x < 128:
         r.extend((CHR_INT1, struct.pack('!b', x)))
     elif -32768 <= x < 32768:
@@ -465,7 +465,7 @@ def encode_tuple(x, r):
             encode_func.get(type(i), encode_instance)(i, r)
         r.append(CHR_TERM)
 
-def encode_dict(x,r):
+def encode_dict(x, r):
     if len(x) < DICT_FIXED_COUNT:
         r.append(chr(DICT_FIXED_START + len(x)))
         for k, v in x.items():
@@ -520,25 +520,25 @@ def test():
     f1 = struct.unpack('!f', struct.pack('!f', 25.5))[0]
     f2 = struct.unpack('!f', struct.pack('!f', 29.3))[0]
     f3 = struct.unpack('!f', struct.pack('!f', -0.6))[0]
-    L = (({'a':15, 'bb':f1, 'ccc':f2, '':(f3,(),False,True,'')},('a',10**20),tuple(range(-100000,100000)),'b'*31,'b'*62,'b'*64,2**30,2**33,2**62,2**64,2**30,2**33,2**62,2**64,False,False, True, -1, 2, 0),)
+    L = (({'a':15, 'bb':f1, 'ccc':f2, '':(f3, (), False, True, '')}, ('a', 10 ** 20), tuple(range(-100000, 100000)), 'b' * 31, 'b' * 62, 'b' * 64, 2 ** 30, 2 ** 33, 2 ** 62, 2 ** 64, 2 ** 30, 2 ** 33, 2 ** 62, 2 ** 64, False, False, True, -1, 2, 0),)
     assert loads(dumps(L)) == L
-    d = dict(zip(range(-100000,100000),range(-100000,100000)))
+    d = dict(zip(range(-100000, 100000), range(-100000, 100000)))
     d.update({'a':20, 20:40, 40:41, f1:f2, f2:f3, f3:False, False:True, True:False})
-    L = (d, {}, {5:6}, {7:7,True:8}, {9:10, 22:39, 49:50, 44: ''})
+    L = (d, {}, {5:6}, {7:7, True:8}, {9:10, 22:39, 49:50, 44: ''})
     assert loads(dumps(L)) == L
-    L = ('', 'a'*10, 'a'*100, 'a'*1000, 'a'*10000, 'a'*100000, 'a'*1000000, 'a'*10000000)
+    L = ('', 'a' * 10, 'a' * 100, 'a' * 1000, 'a' * 10000, 'a' * 100000, 'a' * 1000000, 'a' * 10000000)
     assert loads(dumps(L)) == L
-    L = tuple([dict(zip(range(n),range(n))) for n in range(100)]) + ('b',)
+    L = tuple([dict(zip(range(n), range(n))) for n in range(100)]) + ('b',)
     assert loads(dumps(L)) == L
-    L = tuple([dict(zip(range(n),range(-n,0))) for n in range(100)]) + ('b',)
+    L = tuple([dict(zip(range(n), range(-n, 0))) for n in range(100)]) + ('b',)
     assert loads(dumps(L)) == L
     L = tuple([tuple(range(n)) for n in range(100)]) + ('b',)
     assert loads(dumps(L)) == L
-    L = tuple(['a'*n for n in range(100)]) + ('b',)
+    L = tuple(['a' * n for n in range(100)]) + ('b',)
     assert loads(dumps(L)) == L
-    L = tuple(['a'*n for n in range(100)]) + (None,True,None)
+    L = tuple(['a' * n for n in range(100)]) + (None, True, None)
     assert loads(dumps(L)) == L
-    L = list(['a'*n for n in range(100)]) + [None,True,None]
+    L = list(['a' * n for n in range(100)]) + [None, True, None]
     assert loads(dumps(L)) == L
     assert loads(dumps(None)) == None
     assert loads(dumps({None:None})) == {None:None}
@@ -554,7 +554,7 @@ def test():
 
     serializable.register(A)
 
-    instance = [A(1,2,3), 1, A(1,3,4), 'sss']
+    instance = [A(1, 2, 3), 1, A(1, 3, 4), 'sss']
     print loads(dumps(instance))
 
 if __name__ == '__main__':
