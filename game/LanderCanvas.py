@@ -10,34 +10,26 @@ class LanderSprite(Sprite):
     
     def __init__(self, game_left_limit, game_top_limit, game_width, game_height):
         pygame.sprite.Sprite.__init__(self)
-
+        
+        # Properties that persist through multiple landings        
+        self.left_limit = game_left_limit
+        self.top_limit = game_top_limit
+        self.right_limit = self.left_limit + game_width
+        self.bottom_limit = self.top_limit + game_height
+  
         self.image = LanderSprite.image
         self.rect = self.image.get_rect()
-
-        self.position_x = game_left_limit + game_width/2
-        self.position_y = game_top_limit + 96
-        self.rect.midbottom = (self.position_x, self.position_y)
 
         self.STATUS_PAUSED = 10
         self.STATUS_RUNNING = 20
         self.STATUS_LANDED = 30
         self.STATUS_CRASHED = 40
-        self.status = self.STATUS_PAUSED
 
         self.gravity = 0.08
         self.velocity_slowing = 0.06 
-        self.velocity_x = 0
-        self.velocity_y = 0
         self.max_landing_velocity = 4
-    
-        self.moving_left = False;
-        self.moving_right = False;
-        self.thrusters = False;
-    
-        self.left_limit = game_left_limit
-        self.top_limit = game_top_limit
-        self.right_limit = self.left_limit + game_width
-        self.bottom_limit = self.top_limit + game_height
+
+        self.reset_game()   
 
     def update_velocity(self):
         """ Update velocities depending on which direction ship is moving """
@@ -129,8 +121,18 @@ class LanderSprite(Sprite):
         if self.status != self.STATUS_RUNNING:
             self.set_status(self.STATUS_RUNNING)
 
-    def reset_canvas(self):
-        pass
+    def reset_game(self):
+        self.position_x = self.left_limit + (self.right_limit - self.left_limit)/2
+        self.position_y = self.top_limit + self.rect.height
+        self.rect.midbottom = (self.position_x, self.position_y)  
+        self.status = self.STATUS_PAUSED
+
+        self.velocity_x = 0
+        self.velocity_y = 0
+
+        self.moving_left = False;
+        self.moving_right = False;
+        self.thrusters = False;
 
     def on_key_event(self, event):
         # Handle key up/down events
@@ -143,6 +145,8 @@ class LanderSprite(Sprite):
                 self.set_thrusters(True) 
             elif event.key == pygame.K_s:
                 self.start_game()
+            elif event.key == pygame.K_r:
+                self.reset_game()
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 self.set_left_movement(False)
