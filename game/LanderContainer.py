@@ -81,7 +81,7 @@ class LanderContainer(gui.Container):
         # Update game
         self.lander.draw(screen)
         status = self.lander.get_status()
-        if status == "LANDED" or status == "CRASHED":
+        if status != "RUNNING":
             self.updateNotify(status) 
         
         # Update Readouts

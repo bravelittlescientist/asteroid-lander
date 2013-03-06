@@ -18,13 +18,17 @@ class LanderSprite(Sprite):
         self.position_y = game_top_limit + 96
         self.rect.midbottom = (self.position_x, self.position_y)
 
-        self.landed = False
-        self.crashed = False
+        self.STATUS_PAUSED = 10
+        self.STATUS_RUNNING = 20
+        self.STATUS_LANDED = 30
+        self.STATUS_CRASHED = 40
+        self.status = self.STATUS_PAUSED
 
         self.gravity = 0.08
         self.velocity_slowing = 0.06 
         self.velocity_x = 0
         self.velocity_y = 0
+        self.max_landing_velocity = 4
     
         self.moving_left = False;
         self.moving_right = False;
@@ -66,9 +70,11 @@ class LanderSprite(Sprite):
         if self.position_y + self.velocity_y < self.top_limit + 96:
             self.velocity_y = 0
         elif self.position_y + self.velocity_y > self.bottom_limit:
-            self.position_y = self.bottom_limit
-            if self.velocity_y > 5: self.crashed = True
-            else: self.landed = True
+            self.position_y = self.bottom_limit - 1
+            if self.velocity_y > self.max_landing_velocity: 
+                self.set_status(self.STATUS_CRASHED)
+            else: 
+                self.set_status(self.STATUS_LANDED)
         else:
             self.position_y += self.velocity_y
 
@@ -80,7 +86,7 @@ class LanderSprite(Sprite):
 
     def draw(self, screen):
         """ Draw lander sprite to existing game canvas """
-        if not self.landed and not self.crashed:        
+        if self.status == self.STATUS_RUNNING:        
             self.update()
         screen.blit(self.image, self.rect)
 
@@ -97,6 +103,9 @@ class LanderSprite(Sprite):
         """ Right-arrow: Moving right or stopping right movement """
         self.moving_right = right        
 
+    def set_status(self, stat):
+        self.status = stat
+
     def get_vertical_velocity(self):
         return self.velocity_y
 
@@ -107,12 +116,21 @@ class LanderSprite(Sprite):
         return self.bottom_limit - self.rect.midbottom[1] - 1
 
     def get_status(self):
-        if self.landed:
+        if self.status == self.STATUS_LANDED:
             return "LANDED"
-        elif self.crashed:
+        elif self.status == self.STATUS_CRASHED:
             return "CRASHED"
-        else:
-            return "PLAYING"
+        elif self.status == self.STATUS_RUNNING:
+            return "RUNNING"
+        elif self.status == self.STATUS_PAUSED:
+            return "PAUSED"
+
+    def start_game(self):
+        if self.status != self.STATUS_RUNNING:
+            self.set_status(self.STATUS_RUNNING)
+
+    def reset_canvas(self):
+        pass
 
     def on_key_event(self, event):
         # Handle key up/down events
@@ -123,6 +141,8 @@ class LanderSprite(Sprite):
                 self.set_right_movement(True)
             elif event.key == pygame.K_UP:
                 self.set_thrusters(True) 
+            elif event.key == pygame.K_s:
+                self.start_game()
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 self.set_left_movement(False)
