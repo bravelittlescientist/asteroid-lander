@@ -7,6 +7,7 @@ from game.Constants import *
 
 class Client(ConnectionListener, SpaceshipViewer):
     def __init__(self, host, port):
+        print "Spaceship controller init"
         self.Connect((host, port))
         self.players = {}
         SpaceshipViewer.__init__(self)

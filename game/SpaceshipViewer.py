@@ -1,3 +1,4 @@
+print "pygame init"
 from game.Constants import *
 from os import environ
 from sys import exit
@@ -5,8 +6,14 @@ from sys import exit
 import pygame
 from pygame.locals import *
 from LanderContainer import LanderContainer
-from pgu import gui
 
+
+from pgu.gui import *
+from pgu.gui import App
+from pgu.gui import Container
+#from game.libs."pgu-0.18".pgu.gui import container
+
+print "pygame init"
 pygame.init()
 
 def global_stop_pygame():
@@ -16,6 +23,7 @@ def global_stop_pygame():
 class SpaceshipViewer:
 
     def __init__(self):
+        print "init self"
         self.statusLabel = "connecting"
         self.playersLabel = "0 players"
         self.frame = 0
@@ -24,11 +32,12 @@ class SpaceshipViewer:
         self.init_gui()
 
     def init_gui(self):
+        print "init gui"
         self.screen = pygame.display.set_mode((1024,800), SWSURFACE)
-        self.app = gui.App()
+        self.app = App()
 
         self.c = LanderContainer()
-        self.lc = gui.Container(align=-1,valign=-1)    
+        self.lc = Container(align=-1,valign=-1)    
         self.lc.add(self.c, 0, 0)
 
         self.app.init(self.lc)
