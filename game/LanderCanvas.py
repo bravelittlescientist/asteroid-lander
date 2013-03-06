@@ -63,18 +63,27 @@ class LanderSprite(Sprite):
         self.update_velocity()
 
         # Update position due to velocity
+        if self.position_y + self.velocity_y < self.top_limit + 96:
+            self.velocity_y = 0
+        elif self.position_y + self.velocity_y > self.bottom_limit:
+            self.position_y = self.bottom_limit
+            if self.velocity_y > 5: self.crashed = True
+            else: self.landed = True
+        else:
+            self.position_y += self.velocity_y
+                   
+        self.position_y += self.velocity_y
+
         if (self.position_x + self.velocity_x) < (self.left_limit + 48) or (self.position_x + self.velocity_x) > (self.right_limit - 48):
             self.velocity_x = 0
         self.position_x += self.velocity_x
 
-        if self.position_y + self.velocity_y < self.top_limit + 96 or self.position_y + self.velocity_y > self.bottom_limit:
-            self.velocity_y = 0
-        self.position_y += self.velocity_y
         self.rect.midbottom = (self.position_x, self.position_y)
 
     def draw(self, screen):
         """ Draw lander sprite to existing game canvas """
-        self.update()
+        if not self.landed and not self.crashed:        
+            self.update()
         screen.blit(self.image, self.rect)
 
     # Management movement
@@ -95,6 +104,17 @@ class LanderSprite(Sprite):
 
     def get_horizontal_velocity(self):
         return self.velocity_x
+
+    def get_vertical_position(self):
+        return self.bottom_limit - self.rect.midbottom[1] - 1
+
+    def get_status(self):
+        if self.landed:
+            return "LANDED"
+        elif self.crashed:
+            return "CRASHED"
+        else:
+            return "PLAYING"
 
     def on_key_event(self, event):
         # Handle key up/down events
