@@ -24,6 +24,7 @@ class LanderSprite(Sprite):
         self.STATUS_RUNNING = 20
         self.STATUS_LANDED = 30
         self.STATUS_CRASHED = 40
+        self.STATUS_READY = 50
 
         self.gravity = 0.08
         self.velocity_slowing = 0.06 
@@ -110,6 +111,9 @@ class LanderSprite(Sprite):
     def get_vertical_position(self):
         return self.bottom_limit - self.rect.midbottom[1] - 1
 
+    def set_ready(self):
+        self.status = self.STATUS_READY
+
     def get_status(self):
         if self.status == self.STATUS_LANDED:
             return "LANDED"
@@ -146,8 +150,8 @@ class LanderSprite(Sprite):
                 self.set_right_movement(True)
             elif event.key == pygame.K_UP:
                 self.set_thrusters(True) 
-            #elif event.key == pygame.K_o:
-            #    self.start_game()
+            elif event.key == pygame.K_SPACE:
+                if self.status == self.STATUS_READY: self.start_game()
             #elif event.key == pygame.K_r:
             #    self.reset_game()
         elif event.type == pygame.KEYUP:

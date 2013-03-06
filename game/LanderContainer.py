@@ -86,13 +86,17 @@ class LanderContainer(gui.Container):
             c.triggerBuyFuel()       
         else:     
             self.lander.on_key_event(event)
-      
+    
+    def game_ready(self):
+        self.lander.set_ready()
+        self.updateNotify("Ready? Press SPACE button")
+
     def draw_game(self, screen):
         # Update game
         self.lander.draw(screen)
         status = self.lander.get_status()
-        #if status == "CRASHED" or status == "LANDED":
-            #self.updateNotify(status) 
+        if status == "CRASHED" or status == "LANDED":
+            self.updateNotify(status) 
         
         # Update Readouts
         self.altitude_readout.value = "Altitude: " + str(self.lander.get_vertical_position()) + " m"

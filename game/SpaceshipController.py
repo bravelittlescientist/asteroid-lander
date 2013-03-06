@@ -59,11 +59,12 @@ class Client(ConnectionListener, SpaceshipViewer):
     def Network_acknowledge(self, data):
         print "Received Acknowledge from server" , data
         self.players = data['players']
-    
+        self.notify_ui("Acknowledged")
+
     def Network_StartGame(self, data):
         print "Game Started!"
         self.playersLabel = str(len(data['players'])) + " players"
-        self.run_game()
+        self.c.game_ready()
     
     def Network_response(self, data):
         print "data in network", data
