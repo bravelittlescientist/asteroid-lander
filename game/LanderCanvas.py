@@ -146,10 +146,10 @@ class LanderSprite(Sprite):
                 self.set_right_movement(True)
             elif event.key == pygame.K_UP:
                 self.set_thrusters(True) 
-            elif event.key == pygame.K_o:
-                self.start_game()
-            elif event.key == pygame.K_r:
-                self.reset_game()
+            #elif event.key == pygame.K_o:
+            #    self.start_game()
+            #elif event.key == pygame.K_r:
+            #    self.reset_game()
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 self.set_left_movement(False)

@@ -91,8 +91,8 @@ class LanderContainer(gui.Container):
         # Update game
         self.lander.draw(screen)
         status = self.lander.get_status()
-        if status == "CRASHED" or status == "LANDED":
-            self.updateNotify(status) 
+        #if status == "CRASHED" or status == "LANDED":
+            #self.updateNotify(status) 
         
         # Update Readouts
         self.altitude_readout.value = "Altitude: " + str(self.lander.get_vertical_position()) + " m"

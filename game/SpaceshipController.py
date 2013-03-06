@@ -63,6 +63,7 @@ class Client(ConnectionListener, SpaceshipViewer):
     def Network_StartGame(self, data):
         print "Game Started!"
         self.playersLabel = str(len(data['players'])) + " players"
+        self.run_game()
     
     def Network_response(self, data):
         print "data in network", data

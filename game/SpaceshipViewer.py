@@ -40,6 +40,12 @@ class SpaceshipViewer:
     def stop_pygame(self):
         global_stop_pygame()
 
+    def notify_ui(self, message):
+        self.c.updateNotify(message)
+
+    def run_game(self):
+        self.c.lander.start_game()
+
     def GameLoop(self):
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
