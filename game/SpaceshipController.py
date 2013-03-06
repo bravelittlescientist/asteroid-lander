@@ -2,14 +2,14 @@ import sys
 from time import sleep
 
 from PodSixNet.Connection import connection, ConnectionListener
-from Lander import Lander
+from SpaceshipViewer import SpaceshipViewer
 from game.Constants import *
 
-class Client(ConnectionListener, Lander):
+class Client(ConnectionListener, SpaceshipViewer):
     def __init__(self, host, port):
         self.Connect((host, port))
         self.players = {}
-        Lander.__init__(self)
+        SpaceshipViewer.__init__(self)
     
     def Loop(self):
         self.Pump()

@@ -40,7 +40,7 @@ while not done:
 # Exit gracefully
 pygame.quit()
 
-class Lander:
+class SpaceshipViewer:
 
     def __init__(self):
         self.statusLabel = "connecting"
