@@ -14,7 +14,7 @@ class Client(ConnectionListener, SpaceshipViewer):
     def Loop(self):
         self.Pump()
         connection.Pump()
-        self.Events()
+        self.GameLoop()
     
         if "connecting" in self.statusLabel:
             self.statusLabel = "connecting" + ("." * ((self.frame / 30) % 4))
@@ -126,3 +126,4 @@ else:
     while 1:
         c.Loop()
         sleep(0.001)
+    
