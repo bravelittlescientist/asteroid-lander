@@ -23,13 +23,9 @@ class LanderContainer(gui.Container):
         self.title_menu = gui.TextArea(value="Asteroid Miner", width=152, height=36, focusable=False)
         
         self.base_station_button = gui.Button("Returning to Base Station", width=152, height=36)#, background=(208, 208, 208))
-
         self.notify_value = "NOTIFY"
         self.notification_zone = gui.TextArea(value=self.notify_value, width=256, height=36, focusable=False)
-        #self.base_station_button.connect(gui.CLICK, self.on_click_base_station, None)
-
         self.fuel_button = gui.Button("Buying Fuel", width=152, height=36)
-        #self.fuel_button.connect(gui.CLICK, self.triggerBuyFuel, self.fuel_button)
 
         self.quit_button = gui.Button("Quit", width=96, height=36)   
         #self.quit_button.connect(gui.CLICK, self.exit, None)
@@ -39,7 +35,7 @@ class LanderContainer(gui.Container):
 
         # Initialize screen components: Lander Readouts
         self.altitude_readout = gui.TextArea(value="Altitude = 800 m", width=256, height=20, focusable=False)
-        self.horizontal_speed_readout = gui.TextArea(value="Horizontal Speed: 0.0 m/s", width=256, height=20, focusable=False)
+        self.horizontal_speed_readout = gui.TextArea(value="Horizontal Speed: 0.0 m/s", width=256, height=20, focusable=False)#, color=(255, 0, 0))
         self.vertical_speed_readout = gui.TextArea(value="Vertical Speed: 0.0 m/s", width=256, height=20, focusable=False)
 
         # Initialize screen components: Ship Readouts
@@ -95,13 +91,19 @@ class LanderContainer(gui.Container):
         # Update game
         self.lander.draw(screen)
         status = self.lander.get_status()
-        #if status != "RUNNING":
-        #    self.updateNotify(status) 
+        if status == "CRASHED" or status == "LANDED":
+            self.updateNotify(status) 
         
         # Update Readouts
         self.altitude_readout.value = "Altitude: " + str(self.lander.get_vertical_position()) + " m"
+       
         self.horizontal_speed_readout.value = "Horizontal Speed: " + str(self.lander.get_horizontal_velocity()) + " m/s"
+        if abs(self.lander.get_horizontal_velocity()) > 4: self.horizontal_speed_readout.color = (255, 0, 0)
+        else: self.horizontal_speed_readout.color = (255, 255, 255)
         self.vertical_speed_readout.value = "Vertical Speed: " + str(self.lander.get_vertical_velocity()) + " m/s"
+        #if self.lander.get_vertical_velocity() > 4: self.horizontal_speed_readout.color = (255, 0, 0)
+        #else: self.horizontal_speed_readout.color = (255, 255, 255)
+       
         self.notification_zone.value = self.notify_value
 
     def triggerBaseStation(self):

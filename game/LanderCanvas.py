@@ -63,16 +63,19 @@ class LanderSprite(Sprite):
             self.velocity_y = 0
         elif self.position_y + self.velocity_y > self.bottom_limit:
             self.position_y = self.bottom_limit - 1
-            if self.velocity_y > self.max_landing_velocity: 
+            if self.velocity_y > self.max_landing_velocity or abs(self.velocity_x) > self.max_landing_velocity: 
                 self.set_status(self.STATUS_CRASHED)
             else: 
                 self.set_status(self.STATUS_LANDED)
         else:
             self.position_y += self.velocity_y
 
-        if (self.position_x + self.velocity_x) < (self.left_limit + 48) or (self.position_x + self.velocity_x) > (self.right_limit - 48):
-            self.velocity_x = 0
-        self.position_x += self.velocity_x
+        if (self.position_x + self.velocity_x) < (self.left_limit + 48):
+            if self.status == self.STATUS_RUNNING: self.velocity_x = 0
+        elif (self.position_x + self.velocity_x) > (self.right_limit - 48):
+            if self.status == self.STATUS_RUNNING: self.velocity_x = 0
+        
+        if self.status == self.STATUS_RUNNING: self.position_x += self.velocity_x
 
         self.rect.midbottom = (self.position_x, self.position_y)
 
