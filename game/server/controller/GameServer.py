@@ -17,6 +17,7 @@ class ServerChannel(Channel):
     """
 
     def __init__(self, *args, **kwargs):
+        print "initializing Player copy in Server"
         Channel.__init__(self, *args, **kwargs)
         self.id = str(self._server.NextId())
         intid = int(self.id)
@@ -242,20 +243,25 @@ class LunarLanderServer(Server):
         return self.id
     
     def Connected(self, channel, addr):
-        self.AddPlayer(channel)
+        self.CheckGameStart(channel)
     
-    def AddPlayer(self, player):
+    def CheckGameStart(self, player):
         print "New Player" + str(player.addr)
         self.players[player] = True
         # TODO: PLayer creation and data transmission
-        print "add player"
         players = self.GetPLayers()
-        print players
-        print "get player done"
-        print "sending initial"
-        player.Send({"action": "initial", "players": players})
-        print "sent initial, calling sendPLayers()"
-        self.SendPlayers()
+        print "Current players:", players
+        print "ActivePlayers:" , self.ActivePlayers
+        print "Sending acknowledge to the new player"
+        player.Send({"action": "acknowledge", "players": players}) #acknowledges to the player it is connected to the server successfully
+        if self.ActivePlayers == 2: 
+            print "Sending Game Start for all player"
+            self.SendStartGame()
+            self.SendLeaderBoard()
+        elif self.ActivePlayers > 2:
+            self.SendLeaderBoard()
+        else:
+            print "Waiting for more than one player to start."
 
     def GetPLayers(self):
         players = []
@@ -271,10 +277,18 @@ class LunarLanderServer(Server):
         del self.players[player]
         self.SendPlayers()
     
-    def SendPlayers(self):
+    def SendLeaderBoard(self):
+        print "Sending leaderboard to all"
+        new_data = {"action":"response"}
+        new_data.update({PRINT_LEADERBOARD: self.getLeaderboard()})
+        new_data.update({"response_action":PRINT_LEADERBOARD})
+        #send this new information to all clients, they will just print this on their screens
+        self.SendToAll(new_data)
+
+    def SendStartGame(self):
         # TODO: Transmit data to players/clients
         players = self.GetPLayers()
-        self.SendToAll({"action": "players", "players": players})
+        self.SendToAll({"action": "StartGame", "players": players})
     
     def SendToAll(self, data):
         [p.Send(data) for p in self.players]
@@ -346,7 +360,7 @@ class LunarLanderServer(Server):
         return pInfo.score
     
     def playerInfoToString(self,pInfo):
-        return str(pInfo.name) + "  :  " + str(pInfo.score)
+        return pInfo.name + "  :  " + str(pInfo.score)
     
     def leaderboardToString(self, leaderboard):
         returnString = "player  :   score \n"
