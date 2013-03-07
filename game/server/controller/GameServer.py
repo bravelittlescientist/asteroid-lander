@@ -275,7 +275,7 @@ class LunarLanderServer(Server):
     def DelPlayer(self, player):
         print "Deleting Player" + str(player.addr)
         del self.players[player]
-        self.SendPlayers()
+        #self.SendPlayers()
     
     def SendLeaderBoard(self):
         print "Sending leaderboard to all"
