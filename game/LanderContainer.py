@@ -28,7 +28,6 @@ class LanderContainer(gui.Container):
         self.fuel_button = gui.Button("Buying Fuel", width=152, height=36)
 
         self.quit_button = gui.Button("Quit", width=96, height=36)   
-        #self.quit_button.connect(gui.CLICK, self.exit, None)
 
         # Initialize screen components: Gameplay Canvas
         self.lander = PhysicsEngine(0, 36, 1024, 524)
@@ -44,6 +43,8 @@ class LanderContainer(gui.Container):
         self.add(self.base_station_button, 360, 0)
         self.add(self.fuel_button, 512, 0)
         self.add(self.quit_button, 928, 0)
+
+        #self.add(self.warningRect, 0, 560)
 
         # Position canvas and game readouts
         self.add(self.notification_zone, 768, 36)
@@ -105,6 +106,8 @@ class LanderContainer(gui.Container):
        
         self.horizontal_speed_readout.value = "Horizontal Speed: " + str(self.lander.get_horizontal_velocity()) + " km/s"
         self.vertical_speed_readout.value = "Vertical Speed: " + str(self.lander.get_vertical_velocity()) + " km/s"
+        if abs(self.lander.get_horizontal_velocity()) > 4 or self.lander.get_vertical_velocity() > 4:
+            pygame.draw.rect(screen, (255, 0, 0), (0,560,1024,2), 0)
         self.notification_zone.value = self.notify_value
 
     def triggerMiningPlotIron(self):
