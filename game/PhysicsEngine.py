@@ -111,7 +111,11 @@ class PhysicsEngine(Sprite):
 
         screen.blit(pygame.transform.scale(self.background_img, (self.background_rect.width,self.background_rect.height)), self.background_rect)
         screen.blit(self.platform, pygame.Rect((self.left_landing_bounds, self.bottom_limit - 48), (128, 48)))
-        screen.blit(self.image, self.rect)
+        
+        if abs(self.velocity_x) > 4 or self.velocity_y > 4: 
+            screen.blit(self.shipfast, self.rect)
+        else:
+            screen.blit(self.shipmed, self.rect)
 
     def get_background(self, mineral_string="Iron"):
         if mineral_string == "Copper":
