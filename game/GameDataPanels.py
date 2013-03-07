@@ -39,8 +39,11 @@ class LeaderboardPanel(GamePanel):
         
 
 class MineralPanel(GamePanel):
-    def __init__(self, x, y):
+    def __init__(self, x, y, goal):
         GamePanel.__init__(self, x, y)
+
+        self.goal = goal
+        self.score = {"Iron" : 0, "Gold": 0, "Copper": 0}
 
         self.tr()
         self.td(gui.Label(" ", color=self.fg), colspan=1)
@@ -55,16 +58,22 @@ class MineralPanel(GamePanel):
         self.td(gui.Label("Copper", color=self.fg), colspan=1)
 
         self.tr()
-        self.td(gui.Label("Score   ", color=self.fg), colspan=1)
-        self.td(gui.Label(str(4), color=self.fg), colspan=1)
-        self.td(gui.Label(str(3), color=self.fg), colspan=1)
-        self.td(gui.Label(str(5), color=self.fg), colspan=1)
+        self.td(gui.Label("Score   ",               color=self.fg), colspan=1)
+        self.td(gui.Label(str(self.score["Iron"]),  color=self.fg), colspan=1)
+        self.td(gui.Label(str(self.score["Gold"]),  color=self.fg), colspan=1)
+        self.td(gui.Label(str(self.score["Copper"]),color=self.fg), colspan=1)
 
         self.tr()
-        self.td(gui.Label("Goal   ", color=self.fg), colspan=1)
-        self.td(gui.Label(str(6), color=self.fg), colspan=1)
-        self.td(gui.Label(str(8), color=self.fg), colspan=1)
-        self.td(gui.Label(str(10), color=self.fg), colspan=1)  
+        self.td(gui.Label("Goal   ",                color=self.fg), colspan=1)
+        self.td(gui.Label(str(self.goal["Iron"]),   color=self.fg), colspan=1)
+        self.td(gui.Label(str(self.goal["Gold"]),   color=self.fg), colspan=1)
+        self.td(gui.Label(str(self.goal["Copper"]), color=self.fg), colspan=1)
+
+    def update_score(self, score):
+        self.score = score
+        self.setValue(gui.Label(str(self.score["Iron"]), color=self.fg), 1, 2)
+        self.setValue(gui.Label(str(self.score["Gold"]), color=self.fg), 2, 2)
+        self.setValue(gui.Label(str(self.score["Copper"]), color=self.fg), 3, 2)  
 
 class PlotsPanel(GamePanel):
     def __init__(self, x, y, plots):

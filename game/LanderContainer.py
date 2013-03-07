@@ -56,7 +56,7 @@ class LanderContainer(gui.Container):
 
         # Position Gameplay info panels
         self.leaderboardPanel = LeaderboardPanel(24, 596)
-        self.mineralPanel = MineralPanel(320, 596)
+        self.mineralPanel = MineralPanel(320, 596, {"Iron": 6, "Gold": 8, "Copper": 10})
         self.plotsPanel = PlotsPanel(744, 596, {"Iron" : 4, "Gold": 6, "Copper": 1}) # TODO From Message
         self.add(self.plotsPanel, 744, 596)
         self.add(self.mineralPanel, 320, 596)
@@ -126,6 +126,9 @@ class LanderContainer(gui.Container):
     
     def triggerBuyFuel(self):
         self.updateNotify("Buying Fuel")
+
+    def triggerUpdateMineralScore(self, score_dict):
+        self.mineralPanel.update_score(score_dict)
 
     def updateNotify(self, notif):
         self.notify_value = notif
