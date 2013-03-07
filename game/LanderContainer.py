@@ -56,10 +56,10 @@ class LanderContainer(gui.Container):
 
         # Position Gameplay info panels
         self.leaderboardPanel = LeaderboardPanel(24, 596)
-        self.mineralPanel = MineralPanel(360, 596)
-        self.plotsPanel = PlotsPanel(696, 596)
-        self.add(self.plotsPanel, 696, 596)
-        self.add(self.mineralPanel, 360, 596)
+        self.mineralPanel = MineralPanel(320, 596)
+        self.plotsPanel = PlotsPanel(744, 596)
+        self.add(self.plotsPanel, 744, 596)
+        self.add(self.mineralPanel, 320, 596)
         self.add(self.leaderboardPanel, 24, 596)
 
         self.add(self.fuel_level_readout, 0, 764)

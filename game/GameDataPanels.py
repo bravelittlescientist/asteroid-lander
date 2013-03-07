@@ -9,7 +9,7 @@ class GamePanel(gui.Table):
         gui.Table.__init__(self)
         self.x = x
         self.y = y
-        self.width = 200
+        self.width = 256
         self.height = 164
         self.fg = (255,255,255)
 
@@ -79,7 +79,7 @@ class PlotsPanel(GamePanel):
         self.td(gui.Label(str(1), color=self.fg), colspan=1)
 
         self.tr()  
-        self.td(gui.Label("Indio", color=self.fg), colspan=1)
-        self.td(gui.Label("Gold", color=self.fg), colspan=1)
-        self.td(gui.Label("Copper", color=self.fg), colspan=1)
+        self.td(gui.Label("   Indio   ", color=self.fg), colspan=1)
+        self.td(gui.Label("   Gold   ", color=self.fg), colspan=1)
+        self.td(gui.Label("   Copper   ", color=self.fg), colspan=1)
 
