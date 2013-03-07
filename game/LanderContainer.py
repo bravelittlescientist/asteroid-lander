@@ -36,15 +36,14 @@ class LanderContainer(gui.Container):
         self.altitude_readout = gui.TextArea(value="Altitude = 800 m", width=256, height=20, focusable=False)
         self.horizontal_speed_readout = gui.TextArea(value="Horizontal Speed: 0.0 km/s", width=256, height=20, focusable=False)#, color=(255, 0, 0))
         self.vertical_speed_readout = gui.TextArea(value="Vertical Speed: 0.0 km/s", width=256, height=20, focusable=False)
-        self.fuel_level_readout = gui.TextArea(value="Fuel: ??? L", width=256, height=20, focusable=False)
+        self.fuel_level_readout = gui.TextArea(value="Fuel: 1000.00 L", width=256, height=20, focusable=False) # TODO From Message
+        self.fuel_level = 1000.00
 
         # Position top menu
         self.add(self.title_menu, 0, 0)
         self.add(self.base_station_button, 360, 0)
         self.add(self.fuel_button, 512, 0)
         self.add(self.quit_button, 928, 0)
-
-        #self.add(self.warningRect, 0, 560)
 
         # Position canvas and game readouts
         self.add(self.notification_zone, 768, 36)
@@ -109,6 +108,9 @@ class LanderContainer(gui.Container):
         if abs(self.lander.get_horizontal_velocity()) > 4 or self.lander.get_vertical_velocity() > 4:
             pygame.draw.rect(screen, (255, 0, 0), (0,560,1024,2), 0)
         self.notification_zone.value = self.notify_value
+        if (status == "RUNNING"):       
+            self.fuel_level -= 1
+        self.fuel_level_readout.value = "Fuel: " + str(self.fuel_level) + " L"
 
     def triggerMiningPlotIron(self):
         self.updateNotify("Mining: Iron")
@@ -120,6 +122,7 @@ class LanderContainer(gui.Container):
         self.updateNotify("Mining: Copper")
 
     def triggerBaseStation(self):
+        self.fuel_level = 1000.00
         self.updateNotify("Go to Base Station")
     
     def triggerBuyFuel(self):
