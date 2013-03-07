@@ -44,13 +44,13 @@ class MineralPanel(GamePanel):
 
         self.tr()
         self.td(gui.Label(" ", color=self.fg), colspan=1)
-        self.td(gui.Label("[IMG Indio]", color=self.fg), colspan=1)
-        self.td(gui.Label("[IMG Gold]", color=self.fg), colspan=1)
-        self.td(gui.Label("[IMG Copper]", color=self.fg), colspan=1)
+        self.td(gui.Image("images/iron.png", width=64, height=64), colspan=1)
+        self.td(gui.Image("images/gold.png", width=64, height=64), colspan=1)
+        self.td(gui.Image("images/copper.png", width=64, height=64), colspan=1)
 
         self.tr()
         self.td(gui.Label(" ", color=self.fg), colspan=1)
-        self.td(gui.Label("Indio", color=self.fg), colspan=1)
+        self.td(gui.Label("Iron", color=self.fg), colspan=1)
         self.td(gui.Label("Gold", color=self.fg), colspan=1)
         self.td(gui.Label("Copper", color=self.fg), colspan=1)
 
