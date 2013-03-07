@@ -14,3 +14,5 @@ To Install PGU
 $ cd your/path/to/asteroid-lander/game/libs/pgu-0.18
 
 $ sudo python setup.py install
+
+Image contents obtained from opengameart

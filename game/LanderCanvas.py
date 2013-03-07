@@ -1,5 +1,6 @@
 import sys
 import math
+from random import randint #randint(0,1)
 
 import pygame
 from pygame.sprite import Sprite
