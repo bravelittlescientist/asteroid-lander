@@ -6,7 +6,7 @@ from pygame.locals import *
 from pgu import gui
 
 from GameDataPanels import LeaderboardPanel, MineralPanel, PlotsPanel
-from LanderCanvas import LanderSprite
+from PhysicsEngine import PhysicsEngine
 
 class LanderContainer(gui.Container):
     """
@@ -31,7 +31,7 @@ class LanderContainer(gui.Container):
         #self.quit_button.connect(gui.CLICK, self.exit, None)
 
         # Initialize screen components: Gameplay Canvas
-        self.lander = LanderSprite(0, 36, 1024, 524)
+        self.lander = PhysicsEngine(0, 36, 1024, 524)
 
         # Initialize screen components: Lander Readouts
         self.altitude_readout = gui.TextArea(value="Altitude = 800 m", width=256, height=20, focusable=False)

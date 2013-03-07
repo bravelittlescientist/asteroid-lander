@@ -5,7 +5,7 @@ from random import randint #randint(0,1)
 import pygame
 from pygame.sprite import Sprite
 
-class LanderSprite(Sprite):
+class PhysicsEngine(Sprite):
     """ The LunarLander spaceship sprit """
     image = pygame.image.load("images/spaceship-96.png")
     
@@ -18,7 +18,7 @@ class LanderSprite(Sprite):
         self.right_limit = self.left_limit + game_width
         self.bottom_limit = self.top_limit + game_height
   
-        self.image = LanderSprite.image
+        self.image = PhysicsEngine.image
         self.rect = self.image.get_rect()
 
         self.STATUS_PAUSED = 10
