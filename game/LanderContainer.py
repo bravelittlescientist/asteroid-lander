@@ -57,7 +57,7 @@ class LanderContainer(gui.Container):
         # Position Gameplay info panels
         self.leaderboardPanel = LeaderboardPanel(24, 596)
         self.mineralPanel = MineralPanel(320, 596)
-        self.plotsPanel = PlotsPanel(744, 596)
+        self.plotsPanel = PlotsPanel(744, 596, {"Iron" : 4, "Gold": 6, "Copper": 1}) # TODO From Message
         self.add(self.plotsPanel, 744, 596)
         self.add(self.mineralPanel, 320, 596)
         self.add(self.leaderboardPanel, 24, 596)
@@ -66,15 +66,22 @@ class LanderContainer(gui.Container):
         self.add(self.weight_readout, 256, 764)
 
     def clicked_in_button(self, button, position):
-        return button.rect.collidepoint(position)
+        return button.collidepoint(position)
 
     def mouse_event_handler(self,event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
 
-            if self.clicked_in_button(self.base_station_button, pos): self.triggerBaseStation()
-            elif self.clicked_in_button(self.fuel_button, pos): self.triggerBuyFuel()
-            elif self.clicked_in_button(self.quit_button, pos): self.quit()
+            # Purchasing / Traveling Buttons
+            if self.clicked_in_button(self.base_station_button.rect, pos): self.triggerBaseStation()
+            elif self.clicked_in_button(self.fuel_button.rect, pos): self.triggerBuyFuel()
+            elif self.clicked_in_button(self.quit_button.rect, pos): self.quit()
+
+            # Mining Plots Selection
+            elif self.clicked_in_button(self.plotsPanel.rectIron, pos): self.triggerMiningPlotIron()
+            elif self.clicked_in_button(self.plotsPanel.rectGold, pos): self.triggerMiningPlotGold()
+            elif self.clicked_in_button(self.plotsPanel.rectCopper, pos): self.triggerMiningPlotCopper()
+            #else: self.updateNotify(str(pos[0]) + " " + str(pos[1]))
 
         elif event.type == pygame.MOUSEBUTTONUP:
             pass
@@ -102,13 +109,17 @@ class LanderContainer(gui.Container):
         self.altitude_readout.value = "Altitude: " + str(self.lander.get_vertical_position()) + " m"
        
         self.horizontal_speed_readout.value = "Horizontal Speed: " + str(self.lander.get_horizontal_velocity()) + " m/s"
-        if abs(self.lander.get_horizontal_velocity()) > 4: self.horizontal_speed_readout.color = (255, 0, 0)
-        else: self.horizontal_speed_readout.color = (255, 255, 255)
         self.vertical_speed_readout.value = "Vertical Speed: " + str(self.lander.get_vertical_velocity()) + " m/s"
-        #if self.lander.get_vertical_velocity() > 4: self.horizontal_speed_readout.color = (255, 0, 0)
-        #else: self.horizontal_speed_readout.color = (255, 255, 255)
-       
         self.notification_zone.value = self.notify_value
+
+    def triggerMiningPlotIron(self):
+        self.updateNotify("Mining: Iron")
+
+    def triggerMiningPlotGold(self):
+        self.updateNotify("Mining: Gold")
+
+    def triggerMiningPlotCopper(self):
+        self.updateNotify("Mining: Copper")
 
     def triggerBaseStation(self):
         self.updateNotify("Go to Base Station")

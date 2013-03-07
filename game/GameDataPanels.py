@@ -67,19 +67,33 @@ class MineralPanel(GamePanel):
         self.td(gui.Label(str(10), color=self.fg), colspan=1)  
 
 class PlotsPanel(GamePanel):
-    def __init__(self, x, y):
+    def __init__(self, x, y, plots):
         GamePanel.__init__(self, x, y)
+
+        self.plots = plots 
+        # e.g., {"Iron" : 4, "Gold": 6, "Copper": 1}, a mapping of minerals to quantities
+
+        self.rectIron = pygame.Rect((752, 620), (36, 36))
+        self.rectGold = pygame.Rect((814, 620), (36, 36))
+        self.rectCopper = pygame.Rect((892, 620), (36, 36))
 
         self.tr()
         self.td(gui.Label("Mining Plots", color=self.fg), colspan=3)
         
         self.tr()
-        self.td(gui.Label(str(4), color=self.fg), colspan=1)
-        self.td(gui.Label(str(6), color=self.fg), colspan=1)
-        self.td(gui.Label(str(1), color=self.fg), colspan=1)
+        self.td(gui.Button(str(self.plots["Iron"]), width=36, height=36), colspan=1)
+        self.td(gui.Button(str(self.plots["Gold"]), width=36, height=36), colspan=1)
+        self.td(gui.Button(str(self.plots["Copper"]), width=36, height=36), colspan=1)
 
         self.tr()  
-        self.td(gui.Label("   Indio   ", color=self.fg), colspan=1)
+        self.td(gui.Label("   Iron   ", color=self.fg), colspan=1)
         self.td(gui.Label("   Gold   ", color=self.fg), colspan=1)
         self.td(gui.Label("   Copper   ", color=self.fg), colspan=1)
+
+    def update_plots(self, plots):
+        self.plots = plots
+        self.setValue(gui.Button(str(self.plots["Iron"]), width=36, height=36), 0, 2)
+        self.setValue(gui.Button(str(self.plots["Gold"]), width=36, height=36), 1, 2)
+        self.setValue(gui.Button(str(self.plots["Copper"]), width=36, height=36), 2, 2)
+        
 
