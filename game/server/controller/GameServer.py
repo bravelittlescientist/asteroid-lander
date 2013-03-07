@@ -11,7 +11,7 @@ from weakref import WeakKeyDictionary
 import sys
 
 
-class ServerChannel(Channel):
+class TCPConnector(Channel):
     """
     This is the server representation of a single connected client.
     """
@@ -228,7 +228,7 @@ class ServerChannel(Channel):
                 self.Quit(data)
 
 class LunarLanderServer(Server):
-    channelClass = ServerChannel
+    channelClass = TCPConnector
     ActivePlayers = 0
 
     def __init__(self, *args, **kwargs):
