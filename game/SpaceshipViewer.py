@@ -24,7 +24,7 @@ class SpaceshipViewer:
         self.init_gui()
 
     def init_gui(self):
-        self.screen = pygame.display.set_mode((1024,800), SWSURFACE)
+        self.screen = pygame.display.set_mode((1024,768), SWSURFACE)
         self.app = gui.App()
 
         self.c = LanderContainer()

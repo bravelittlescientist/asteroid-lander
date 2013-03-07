@@ -15,9 +15,9 @@ class LanderContainer(gui.Container):
     """
     def __init__(self):
         """
-        Game initialization: 800x800 screen for now
+        Game initialization: 1024x768 screen for now
         """
-        gui.Container.__init__(self, width=1024, height=800)
+        gui.Container.__init__(self, width=1024, height=704)
 
         # Initialize screen components: Title Menu
         self.title_menu = gui.TextArea(value="Asteroid Miner", width=152, height=36, focusable=False)
@@ -35,12 +35,9 @@ class LanderContainer(gui.Container):
 
         # Initialize screen components: Lander Readouts
         self.altitude_readout = gui.TextArea(value="Altitude = 800 m", width=256, height=20, focusable=False)
-        self.horizontal_speed_readout = gui.TextArea(value="Horizontal Speed: 0.0 m/s", width=256, height=20, focusable=False)#, color=(255, 0, 0))
-        self.vertical_speed_readout = gui.TextArea(value="Vertical Speed: 0.0 m/s", width=256, height=20, focusable=False)
-
-        # Initialize screen components: Ship Readouts
-        self.fuel_level_readout = gui.TextArea(value="Fuel: ??? L", width=256, height=36, focusable=False)
-        self.weight_readout = gui.TextArea(value="Weight: ??? tons", width=256, height=36, focusable=False) 
+        self.horizontal_speed_readout = gui.TextArea(value="Horizontal Speed: 0.0 km/s", width=256, height=20, focusable=False)#, color=(255, 0, 0))
+        self.vertical_speed_readout = gui.TextArea(value="Vertical Speed: 0.0 km/s", width=256, height=20, focusable=False)
+        self.fuel_level_readout = gui.TextArea(value="Fuel: ??? L", width=256, height=20, focusable=False)
 
         # Position top menu
         self.add(self.title_menu, 0, 0)
@@ -50,20 +47,18 @@ class LanderContainer(gui.Container):
 
         # Position canvas and game readouts
         self.add(self.notification_zone, 768, 36)
-        self.add(self.altitude_readout, 0, 560)
-        self.add(self.horizontal_speed_readout, 360, 560)
-        self.add(self.vertical_speed_readout, 720, 560)
+        self.add(self.altitude_readout, 0, 562)
+        self.add(self.horizontal_speed_readout, 256, 562)
+        self.add(self.vertical_speed_readout, 512, 562)
+        self.add(self.fuel_level_readout, 768, 562)
 
         # Position Gameplay info panels
-        self.leaderboardPanel = LeaderboardPanel(24, 596)
-        self.mineralPanel = MineralPanel(320, 596, {"Iron": 6, "Gold": 8, "Copper": 10})
-        self.plotsPanel = PlotsPanel(744, 596, {"Iron" : 4, "Gold": 6, "Copper": 1}) # TODO From Message
-        self.add(self.plotsPanel, 744, 596)
-        self.add(self.mineralPanel, 320, 596)
-        self.add(self.leaderboardPanel, 24, 596)
-
-        self.add(self.fuel_level_readout, 0, 764)
-        self.add(self.weight_readout, 256, 764)
+        self.leaderboardPanel = LeaderboardPanel(24, 616)
+        self.mineralPanel = MineralPanel(320, 616, {"Iron": 6, "Gold": 8, "Copper": 10})
+        self.plotsPanel = PlotsPanel(744, 616, {"Iron" : 4, "Gold": 6, "Copper": 1}) # TODO From Message
+        self.add(self.plotsPanel, 744, 616)
+        self.add(self.mineralPanel, 320, 616)
+        self.add(self.leaderboardPanel, 24, 616)
 
     def clicked_in_button(self, button, position):
         return button.collidepoint(position)
@@ -88,9 +83,9 @@ class LanderContainer(gui.Container):
 
     def key_event_handler(self, event):
         if event.key == pygame.K_b:
-            c.triggerBaseStation()
+            self.triggerBaseStation()
         elif event.key == pygame.K_f:
-            c.triggerBuyFuel()       
+            self.triggerBuyFuel()       
         else:     
             self.lander.on_key_event(event)
     
@@ -108,8 +103,8 @@ class LanderContainer(gui.Container):
         # Update Readouts
         self.altitude_readout.value = "Altitude: " + str(self.lander.get_vertical_position()) + " m"
        
-        self.horizontal_speed_readout.value = "Horizontal Speed: " + str(self.lander.get_horizontal_velocity()) + " m/s"
-        self.vertical_speed_readout.value = "Vertical Speed: " + str(self.lander.get_vertical_velocity()) + " m/s"
+        self.horizontal_speed_readout.value = "Horizontal Speed: " + str(self.lander.get_horizontal_velocity()) + " km/s"
+        self.vertical_speed_readout.value = "Vertical Speed: " + str(self.lander.get_vertical_velocity()) + " km/s"
         self.notification_zone.value = self.notify_value
 
     def triggerMiningPlotIron(self):
@@ -136,41 +131,3 @@ class LanderContainer(gui.Container):
     def quit(self):
         # TODO Send player quitting message here        
         sys.exit(0)     
-      
-def running_offline():
-    pygame.init()
-    screen = pygame.display.set_mode((1024,800), SWSURFACE)
-    app = gui.App()
-
-    c = LanderContainer()
-    lc = gui.Container(align=-1,valign=-1)    
-    lc.add(c, 0, 0)
-    
-    app.init(lc)
-    done = False
-
-    background = pygame.Surface(screen.get_size())
-    background = background.convert()
-    background.fill((0, 0, 0)) 
-
-    while not done:
-        # Key event handling        
-        for e in pygame.event.get():
-            if e.type is pygame.QUIT:
-                done = True
-            elif e.type == pygame.KEYDOWN or e.type == pygame.KEYUP:
-                c.key_event_handler(e)
-            elif e.type == pygame.MOUSEBUTTONDOWN or e.type == pygame.MOUSEBUTTONUP:         
-                c.mouse_event_handler(e)
-
-        screen.blit(background, (0, 0))
-        c.draw_game(screen)
-        app.paint(screen)
-        pygame.display.flip()
-
-    # Exit gracefully
-    pygame.quit()
-  
-if __name__ == "__main__":
-    pass
-    #running_offline()

@@ -1,14 +1,13 @@
 import sys
 import math
-from random import randint #randint(0,1)
+from random import randint
 
 import pygame
 from pygame.sprite import Sprite
 
 class PhysicsEngine(Sprite):
     """ The LunarLander spaceship sprit """
-    image = pygame.image.load("images/spaceship-96.png")
-    
+   
     def __init__(self, game_left_limit, game_top_limit, game_width, game_height):
         pygame.sprite.Sprite.__init__(self)
         
@@ -17,9 +16,14 @@ class PhysicsEngine(Sprite):
         self.top_limit = game_top_limit
         self.right_limit = self.left_limit + game_width
         self.bottom_limit = self.top_limit + game_height
+        self.background_rect = pygame.Rect(self.left_limit, self.top_limit, game_width, game_height)
   
-        self.image = PhysicsEngine.image
+        self.shipslow = pygame.image.load("images/shipslow.png")
+        self.shipmed = pygame.image.load("images/shipmed.png")
+        self.shipfast = pygame.image.load("images/shipfast.png")
+        self.image = self.shipslow        
         self.rect = self.image.get_rect()
+        self.platform = pygame.image.load("images/platform.png")
 
         self.STATUS_PAUSED = 10
         self.STATUS_RUNNING = 20
@@ -30,6 +34,19 @@ class PhysicsEngine(Sprite):
         self.gravity = 0.08
         self.velocity_slowing = 0.06 
         self.max_landing_velocity = 4
+
+        self.copperbg = [
+            pygame.image.load("images/Terrains/copper1.bmp"),
+            pygame.image.load("images/Terrains/copper2.bmp")
+        ]
+        self.ironbg = [
+            pygame.image.load("images/Terrains/iron1.bmp"),
+            pygame.image.load("images/Terrains/iron2.bmp")
+        ]
+        self.goldbg = [
+            pygame.image.load("images/Terrains/gold1.bmp"),
+            pygame.image.load("images/Terrains/gold2.bmp")
+        ]
 
         self.reset_game()   
 
@@ -61,7 +78,7 @@ class PhysicsEngine(Sprite):
         self.update_velocity()
 
         # Update position due to velocity
-        if self.position_y + self.velocity_y < self.top_limit + 96:
+        if self.position_y + self.velocity_y < self.top_limit + self.rect.height:
             self.velocity_y = 0
         elif self.position_y + self.velocity_y > self.bottom_limit:
             self.position_y = self.bottom_limit - 1
@@ -72,12 +89,18 @@ class PhysicsEngine(Sprite):
         else:
             self.position_y += self.velocity_y
 
-        if (self.position_x + self.velocity_x) < (self.left_limit + 48):
+        if (self.position_x + self.velocity_x) < (self.left_limit + self.rect.height/2):
             if self.status == self.STATUS_RUNNING: self.velocity_x = 0
-        elif (self.position_x + self.velocity_x) > (self.right_limit - 48):
+        elif (self.position_x + self.velocity_x) > (self.right_limit - self.rect.height/2):
             if self.status == self.STATUS_RUNNING: self.velocity_x = 0
         
         if self.status == self.STATUS_RUNNING: self.position_x += self.velocity_x
+
+        # Check for bounds
+        if self.status == self.STATUS_LANDED and \
+            (self.left_landing_bounds > self.position_x - self.rect.width/2 or \
+                self.right_landing_bounds < self.position_x + self.rect.width/2):
+            self.status = self.STATUS_CRASHED
 
         self.rect.midbottom = (self.position_x, self.position_y)
 
@@ -85,7 +108,18 @@ class PhysicsEngine(Sprite):
         """ Draw lander sprite to existing game canvas """
         if self.status == self.STATUS_RUNNING:        
             self.update()
+
+        screen.blit(pygame.transform.scale(self.background_img, (self.background_rect.width,self.background_rect.height)), self.background_rect)
+        screen.blit(self.platform, pygame.Rect((self.left_landing_bounds, self.bottom_limit - 48), (128, 48)))
         screen.blit(self.image, self.rect)
+
+    def get_background(self, mineral_string="Iron"):
+        if mineral_string == "Copper":
+            return self.copperbg[randint(0,1)]
+        elif mineral_string == "Gold":
+            return self.goldbg[randint(0,1)]
+        elif mineral_string == "Iron":
+            return self.ironbg[randint(0,1)]
 
     # Management movement
     def set_thrusters(self, thrusters_on):
@@ -141,6 +175,11 @@ class PhysicsEngine(Sprite):
         self.moving_left = False;
         self.moving_right = False;
         self.thrusters = False;
+
+        self.left_landing_bounds = randint(128, self.right_limit - 256)
+        self.right_landing_bounds = self.left_landing_bounds + 128
+
+        self.background_img = self.get_background()
 
     def on_key_event(self, event):
         # Handle key up/down events
