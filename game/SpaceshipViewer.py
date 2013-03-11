@@ -5,7 +5,7 @@ from sys import exit
 import pygame
 from pygame.locals import *
 from LanderContainer import LanderContainer
-from pgu import gui
+from game.libs.pgu import gui
 
 pygame.init()
 
@@ -27,7 +27,7 @@ class SpaceshipViewer:
         self.screen = pygame.display.set_mode((1024,768), SWSURFACE)
         self.app = gui.App()
 
-        self.c = LanderContainer()
+        self.c = LanderContainer(self)
         self.lc = gui.Container(align=-1,valign=-1)    
         self.lc.add(self.c, 0, 0)
 

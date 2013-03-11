@@ -1,22 +1,25 @@
-import sys
-import math
-import pygame
-from pygame.locals import *
-
-from pgu import gui
-
 from GameDataPanels import LeaderboardPanel, MineralPanel, PlotsPanel
 from PhysicsEngine import PhysicsEngine
+from game.Constants import IRON, GOLD, COPPER, IRON_PLOT_TOTAL, GOLD_PLOT_TOTAL, \
+    COPPER_PLOT_TOTAL, GAME_GOAL_IRON, GAME_GOAL_GOLD, GAME_GOAL_COPPER
+from game.libs.pgu import gui
+from pygame.locals import *
+import math
+import pygame
+import sys
+
+
 
 class LanderContainer(gui.Container):
     """
     This container is the main GUI for the Lander Game.
     
     """
-    def __init__(self):
+    def __init__(self, controller):
         """
         Game initialization: 1024x768 screen for now
         """
+        self.controller = controller
         gui.Container.__init__(self, width=1024, height=704)
 
         # Initialize screen components: Title Menu
@@ -54,8 +57,8 @@ class LanderContainer(gui.Container):
 
         # Position Gameplay info panels
         self.leaderboardPanel = LeaderboardPanel(24, 616)
-        self.mineralPanel = MineralPanel(320, 616, {"Iron": 6, "Gold": 8, "Copper": 10})
-        self.plotsPanel = PlotsPanel(744, 616, {"Iron" : 4, "Gold": 6, "Copper": 1}) # TODO From Message
+        self.mineralPanel = MineralPanel(320, 616, {IRON: GAME_GOAL_IRON, GOLD: GAME_GOAL_GOLD, COPPER: GAME_GOAL_COPPER})
+        self.plotsPanel = PlotsPanel(744, 616, {IRON : IRON_PLOT_TOTAL, GOLD: GOLD_PLOT_TOTAL, COPPER: COPPER_PLOT_TOTAL}) # TODO From Message
         self.add(self.plotsPanel, 744, 616)
         self.add(self.mineralPanel, 320, 616)
         self.add(self.leaderboardPanel, 24, 616)
@@ -91,14 +94,20 @@ class LanderContainer(gui.Container):
     
     def game_ready(self):
         self.lander.set_ready()
-        self.updateNotify("Ready? Press SPACE button")
 
     def draw_game(self, screen):
         # Update game
         self.lander.draw(screen)
         status = self.lander.get_status()
-        if status == "CRASHED" or status == "LANDED":
-            self.updateNotify(status) 
+        if status == "CRASHED":
+            self.updateNotify(status)
+            self.triggerCrashedLanded();
+            self.lander.set_status(self.lander.STATUS_PAUSED);
+        elif status == "LANDED":
+            self.triggerLandedSafely(10);
+            self.lander.set_status(self.lander.STATUS_PAUSED);
+            #send this signal to server
+             
         
         # Update Readouts
         self.altitude_readout.value = "Altitude: " + str(self.lander.get_vertical_position()) + " m"
@@ -114,26 +123,43 @@ class LanderContainer(gui.Container):
 
     def triggerMiningPlotIron(self):
         self.updateNotify("Mining: Iron")
+        self.controller.RequestPlot(IRON)
 
     def triggerMiningPlotGold(self):
         self.updateNotify("Mining: Gold")
+        self.controller.RequestPlot(GOLD)
 
     def triggerMiningPlotCopper(self):
         self.updateNotify("Mining: Copper")
+        self.controller.RequestPlot(COPPER)
 
     def triggerBaseStation(self):
         self.fuel_level = 1000.00
-        self.updateNotify("Go to Base Station")
+        self.updateNotify("Returning to Base Station")
+        self.controller.ReturnToEarth()
     
     def triggerBuyFuel(self):
         self.updateNotify("Buying Fuel")
+        self.controller.BuyFuel()
 
     def triggerUpdateMineralScore(self, score_dict):
         self.mineralPanel.update_score(score_dict)
 
     def updateNotify(self, notif):
+        print notif
         self.notify_value = notif
+    
+    def triggerCrashedLanded(self):
+        self.controller.CrashLanded()
+    def triggerLandedSafely(self,score):
+        self.controller.LandedSafely(score)
+        
+    def refreshLeaderboard(self,data):
+        self.leaderboardPanel.refreshLeaderboard(data)
 
+    def updatePlots(self,data):
+        self.plotsPanel.update_plots(data)
+    
     def quit(self):
         # TODO Send player quitting message here        
         sys.exit(0)     

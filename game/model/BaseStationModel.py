@@ -15,7 +15,7 @@ class BaseStationModel(object):
         '''
         Constructor
         '''
-        self.fuel = 0#MAX_FUEL_BASE_STATION-1
+        self.fuel = MAX_FUEL_BASE_STATION
         self.gameScore = {GOLD:0,
                           COPPER:0,
                           IRON:0}

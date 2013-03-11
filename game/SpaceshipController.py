@@ -10,6 +10,7 @@ class Client(ConnectionListener, SpaceshipViewer):
         self.Connect((host, port))
         self.players = {}
         SpaceshipViewer.__init__(self)
+        self.crashed = False
     
     def Loop(self):
         self.Pump()
@@ -37,7 +38,7 @@ class Client(ConnectionListener, SpaceshipViewer):
         self.fireRequest({"request_action":CRASH_LANDED, CRASH_LANDED: info})
     
     def BuyFuel(self, info=None):
-        print "event key b captured"
+        print "inside BuyFuel, of spaceshipController"
         self.fireRequest({"request_action":BUY_FUEL, BUY_FUEL: info})    
     
     def RequestPlot(self, info):
@@ -62,9 +63,10 @@ class Client(ConnectionListener, SpaceshipViewer):
         self.notify_ui("Acknowledged")
 
     def Network_StartGame(self, data):
-        print "Game Started!"
-        self.playersLabel = str(len(data['players'])) + " players"
-        self.c.game_ready()
+        if not self.crashed:
+            print "Game Started!"
+            self.playersLabel = str(len(data['players'])) + " players"
+            self.c.updateNotify("Officer, select a plot to start your mission.")
     
     def Network_response(self, data):
         print "data in network", data
@@ -75,30 +77,42 @@ class Client(ConnectionListener, SpaceshipViewer):
             print "data", data
             if action == PRINT_LEADERBOARD:
                 print action , ':\n' , data[action]
+                self.c.refreshLeaderboard(data[action])
             elif action == BASE_STATION_FUEL_UPDATED:
                 print action , ':' , data[action]        
             elif action == FUEL_REQUEST_DENIED:
                 print action , '!', data[action]
             elif action == REQUEST_PLOT_APPROVED:
                 print action , '!' , data[action]
+                self.c.lander.reset_game()
+                self.c.game_ready()
+                self.c.updateNotify("Plot assigned, press space to start landing")
             elif action == REQUEST_PLOT_DENIED:
                 print action , '!' , data[action]
+                self.c.updateNotify(data[action])
             elif action == NOTIFICATION:
                 print action , ':' , data[action]
+                self.c.updateNotify(data[action])
             elif action == UPDATE_GAME_SCORE:
                 print action , ' event received'
                 gameScore = data[action]
                 print GOLD , ' = ', gameScore[GOLD]
                 print IRON , ' = ', gameScore[IRON]
                 print COPPER , ' = ', gameScore[COPPER]
+                self.c.triggerUpdateMineralScore(gameScore)
             elif action == UPDATE_GRID_STATUS:
                 print action , ' event received'
                 miningGrid = data[action]
                 print GOLD , ' = ',miningGrid[GOLD]
                 print IRON , ' = ',miningGrid[IRON]
                 print COPPER , ' = ', miningGrid[COPPER]
+                self.c.updatePlots(data[action])
             elif action == UPDATE_SPACESHIP_STATE:
                 print action , data[action]
+            elif action == GAME_OVER_FOR_CLIENT:
+                self.crashed = True
+            elif action == LANDED_SUCCESSFULLY:
+                self.c.updateNotify(data[action])
                 # update the spaceship information
         else:
             print "data received: ", data    

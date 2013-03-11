@@ -1,6 +1,9 @@
+from game.Constants import IRON, GOLD, COPPER
+from game.libs import jsonpickle
+from game.libs.pgu import gui
+from game.model.Leaderboard import *
+from game.model.LeaderboardEntry import *
 import pygame
-from pgu import gui
-
 class GamePanel(gui.Table):
     """
     Base class for dashboard info panels
@@ -29,13 +32,28 @@ class LeaderboardPanel(GamePanel):
         self.addRow("DeepSpace", 6)
 
         #[] {}
-
+    def addHeader(self):
+        self.tr()
+        self.td(gui.Label("Spaceship        ", color=self.fg), colspan=2)
+        self.td(gui.Label("Points", color=self.fg), colspan=1)
+    
     def addRow(self, ship, score):
         self.tr()
         self.td(gui.Label(ship, color=self.fg), colspan=2)
         self.td(gui.Label(str(score), color=self.fg), colspan=1)
-
+    
+    def delRows(self):
+        while self.getRows()>0:
+            self.remove_row(0)
     #def updateLeaderboard(self, player_score_list):
+    def refreshLeaderboard(self,data):
+        self.delRows()
+        self.addHeader()
+        print "data", data ," type", type(data)
+        obj = jsonpickle.decode(data)
+        for entry in obj.entries:
+            self.addRow(entry['player'], entry['score'])
+        #self.addRow(ship, score)
         
 
 class MineralPanel(GamePanel):
@@ -43,7 +61,7 @@ class MineralPanel(GamePanel):
         GamePanel.__init__(self, x, y)
 
         self.goal = goal
-        self.score = {"Iron" : 0, "Gold": 0, "Copper": 0}
+        self.score = {IRON: 0, GOLD: 0, COPPER: 0}
 
         self.tr()
         self.td(gui.Label(" ", color=self.fg), colspan=1)
@@ -58,22 +76,29 @@ class MineralPanel(GamePanel):
         self.td(gui.Label("Copper", color=self.fg), colspan=1)
 
         self.tr()
+        self.ironScoreLabel = gui.Label(str(self.score[IRON]),  color=self.fg)
+        self.goldScoreLabel = gui.Label(str(self.score[GOLD]),  color=self.fg)
+        self.copperScoreLabel = gui.Label(str(self.score[COPPER]),  color=self.fg)
         self.td(gui.Label("Score   ",               color=self.fg), colspan=1)
-        self.td(gui.Label(str(self.score["Iron"]),  color=self.fg), colspan=1)
-        self.td(gui.Label(str(self.score["Gold"]),  color=self.fg), colspan=1)
-        self.td(gui.Label(str(self.score["Copper"]),color=self.fg), colspan=1)
+        self.td(self.ironScoreLabel, colspan=1)
+        self.td(self.goldScoreLabel, colspan=1)
+        self.td(self.copperScoreLabel, colspan=1)
 
         self.tr()
         self.td(gui.Label("Goal   ",                color=self.fg), colspan=1)
-        self.td(gui.Label(str(self.goal["Iron"]),   color=self.fg), colspan=1)
-        self.td(gui.Label(str(self.goal["Gold"]),   color=self.fg), colspan=1)
-        self.td(gui.Label(str(self.goal["Copper"]), color=self.fg), colspan=1)
+        self.td(gui.Label(str(self.goal[IRON]),   color=self.fg), colspan=1)
+        self.td(gui.Label(str(self.goal[GOLD]),   color=self.fg), colspan=1)
+        self.td(gui.Label(str(self.goal[COPPER]), color=self.fg), colspan=1)
 
     def update_score(self, score):
         self.score = score
-        self.setValue(gui.Label(str(self.score["Iron"]), color=self.fg), 1, 2)
-        self.setValue(gui.Label(str(self.score["Gold"]), color=self.fg), 2, 2)
-        self.setValue(gui.Label(str(self.score["Copper"]), color=self.fg), 3, 2)  
+        print "inside update_score: score", score
+        self.ironScoreLabel.value = str(self.score[IRON])
+        self.goldScoreLabel.value = str(self.score[GOLD])
+        self.copperScoreLabel.value = str(self.score[COPPER])
+#        self.setValue(gui.Label(str(self.score[IRON]), color=self.fg), 1, 2)
+#        self.setValue(gui.Label(str(self.score[GOLD]), color=self.fg), 2, 2)
+#        self.setValue(gui.Label(str(self.score[COPPER]), color=self.fg), 3, 2)  
 
 class PlotsPanel(GamePanel):
     def __init__(self, x, y, plots):
@@ -89,10 +114,13 @@ class PlotsPanel(GamePanel):
         self.tr()
         self.td(gui.Label("Mining Plots", color=self.fg), colspan=3)
         
+        self.goldButton = gui.Button(str(self.plots[GOLD]), width=36, height=36)
+        self.ironButton = gui.Button(str(self.plots[IRON]), width=36, height=36)
+        self.copperButton = gui.Button(str(self.plots[COPPER]), width=36, height=36)
         self.tr()
-        self.td(gui.Button(str(self.plots["Iron"]), width=36, height=36), colspan=1)
-        self.td(gui.Button(str(self.plots["Gold"]), width=36, height=36), colspan=1)
-        self.td(gui.Button(str(self.plots["Copper"]), width=36, height=36), colspan=1)
+        self.td(self.ironButton, colspan=1)
+        self.td(self.goldButton, colspan=1)
+        self.td(self.copperButton, colspan=1)
 
         self.tr()  
         self.td(gui.Label("   Iron   ", color=self.fg), colspan=1)
@@ -101,8 +129,7 @@ class PlotsPanel(GamePanel):
 
     def update_plots(self, plots):
         self.plots = plots
-        self.setValue(gui.Button(str(self.plots["Iron"]), width=36, height=36), 0, 2)
-        self.setValue(gui.Button(str(self.plots["Gold"]), width=36, height=36), 1, 2)
-        self.setValue(gui.Button(str(self.plots["Copper"]), width=36, height=36), 2, 2)
-        
-
+        print "plots", self.plots
+        self.goldButton.value = str(self.plots[GOLD])
+        self.ironButton.value = str(self.plots[IRON])
+        self.copperButton.value = str(self.plots[COPPER])

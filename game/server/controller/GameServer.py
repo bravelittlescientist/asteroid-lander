@@ -3,13 +3,15 @@ from PodSixNet.Server import Server
 from ServerHelper import *
 from collections import namedtuple
 from game.Constants import *
+from game.model.Leaderboard import Leaderboard
+from game.model.LeaderboardEntry import LeaderboardEntry
 from game.model.SpaceshipModel import SpaceshipModel
 from game.server.businessservice.BusinessService import BusinessService
 from random import randint
 from time import sleep, localtime
 from weakref import WeakKeyDictionary
+from game.libs import jsonpickle
 import sys
-
 
 class TCPConnector(Channel):
     """
@@ -56,6 +58,10 @@ class TCPConnector(Channel):
             self.SendSpaceShipInfoToSelfPlayer()
             self.SendGridStatus()
             self.SendLeaderBoard()
+            return_data = self.GetReturnData()
+            return_data.update({LANDED_SUCCESSFULLY: "Great Landing Officer. Select another plot or return to base."})
+            return_data.update({"response_action" : LANDED_SUCCESSFULLY})
+            self.Send(return_data)
         else:
             print "no plot assigned to spaceship, it can not land. this event should not have been passed by client"
     
@@ -89,8 +95,8 @@ class TCPConnector(Channel):
             return_data.update({REQUEST_PLOT_APPROVED: self._server.getPlot(data)})
             return_data.update({"response_action" : REQUEST_PLOT_APPROVED})
             self.spaceship.assignedPlot = data[PLOT_TYPE]
-            self.PassOn(return_data)
             self.SendNotification("Player " + str(self.id) + " has been assigned a " + data[PLOT_TYPE] + " plot")
+            self.Send(return_data)
             self.SendGridStatus()
         else:
             # plot of this type not available
@@ -122,34 +128,38 @@ class TCPConnector(Channel):
         c) try to refuel spaceship
         d) notify all players about changes in the Base Station fuel level and Game Score
         '''
-        
+        print "inside return to earth"
         self._server.updateGameScore(self.spaceship)
+        self.spaceship.minerals[GOLD] = 0
+        self.spaceship.minerals[IRON] = 0
+        self.spaceship.minerals[COPPER] = 0
         self.SendGameScore()
         
         if self._server.checkGoalAccomplished():
+            print "goal accomplished"
             self.SendNotification("Mission Accomplished! Congratulations!")
             new_data =self.GetReturnData()
             new_data.update({"response_action":GAME_GOAL_ACHIEVED})
             self.PassOn(new_data)
         elif self._server.canRefuelSpaceship(data):
+            print "base station can refuel the ship."
             fuelAvailable = self._server.withdrawFuel(data)
+            print "fuel available in spaceship is", fuelAvailable
             self.spaceship.fuelLevel +=fuelAvailable
+            print "spaceship refueled, fuel in spaceship", self.spaceship.fuelLevel
             new_data = self.GetReturnData()
             new_data.update({BASE_STATION_FUEL_UPDATED: self._server.getBaseStationFuelLevel()})
             new_data.update({"response_action" : BASE_STATION_FUEL_UPDATED})
             self.PassOn(new_data)
             self.SendNotification("Player " + str(self.id)+ " was refueled at Base Station")
         else:
-            #No fuel left
+            print "No fuel left in space ship"
             new_data =self.GetReturnData()
             new_data.update({"response_action":NO_FUEL_LEFT})
             #send this new information to all clients, they will just print this on their screens
             self.Send(new_data);
-            self.SendNotification("Player "+self.id+" is grounded with no fuel at Base Station. Somebody please buy fuel!")
+            self.SendNotification("Player "+str(self.id)+" is grounded with no fuel at Base Station. Somebody please buy fuel!")
 
-            self.spaceship.minerals[GOLD] = 0
-            self.spaceship.minerals[IRON] = 0
-            self.spaceship.minerals[COPPER] = 0
         
     def Quit(self,data):
         '''
@@ -298,16 +308,16 @@ class LunarLanderServer(Server):
             self.Pump()
             sleep(0.0001)
     def getLeaderboard(self):
-        leaderboard = []
-        PlayerInfo = namedtuple('PlayerInfo', 'name score')
-        
+        leaderboard = Leaderboard()
+        #PlayerInfo = namedtuple('PlayerInfo', 'name score')
         for p in self.players:
-            row = PlayerInfo(name=p.id, score=p.spaceship.score)
-            leaderboard.append(row)
-        leaderboard.sort(key=self.getPlayerScore, reverse=True)
-        print (self.leaderboardToString(leaderboard))
-        data = self.leaderboardToString(leaderboard)
-        return data
+            row = LeaderboardEntry(p.id, p.spaceship.score)
+            leaderboard.addEntry(row)
+        leaderboard.entries.sort(key=self.getPlayerScore, reverse=True)
+        #print (self.leaderboardToString(leaderboard))
+        data = leaderboard.getSelfStateObj()
+        print "data is ", jsonpickle.encode(leaderboard)
+        return jsonpickle.encode(leaderboard)
     
     def canBuyFuel(self):
         return self.service.canBuyFuel()
@@ -371,7 +381,8 @@ class LunarLanderServer(Server):
         return returnString
 
     def withdrawFuel(self,data):
-        spaceshipFuelLevel = data[SPACESHIP_FUEL_KEY]
+        spaceshipFuelLevel = 0#data.get(SPACESHIP_FUEL_KEY,0) # default is 0
+        print "inside withdrawfuel, current spaceship fuel level ", spaceshipFuelLevel
         return self.service.withdrawFuel(SPACESHIP_FUEL_CAPACITY-spaceshipFuelLevel)
         
     def getBaseStationFuelLevel(self):

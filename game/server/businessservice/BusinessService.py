@@ -84,6 +84,7 @@ class BusinessService(object):
     def withdrawFuel(self,amountRequested):
         if self.baseStation.getFuel() > amountRequested:
             self.baseStation.setFuel(self.baseStation.getFuel()-amountRequested)
+            print "fuel amount requested: ", amountRequested
             return amountRequested
         else:
             available = amountRequested-self.baseStation.getFuel()
