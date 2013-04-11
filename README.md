@@ -3,7 +3,9 @@ Asteroid Lander
 
 Multiplayer, asteroid-mining themed game inspired by the classic Lunar Lander video game.
 
-There isn't as much in-game documentation of the controls as we would have liked, due to a tight time-schedule. This may be added as a feature later. 
+There isn't as much in-game documentation of the controls as we would have liked, due to a tight time-schedule. 
+This may be added as a feature later. 
+If you're interested in learning about the design and architecture of the game, we've included our course reports in the reports/ directory.
 
 ## Getting Started: Environment
 
