@@ -19,7 +19,12 @@ Step 2: Make sure the top-level project directory is on the Python Path. Some ID
 
     $ export PYTHONPATH=$PYTHONPATH:/path/to/asteroid-lander/
 
-Step 3: Make starting scripts executable
+Step 3: Install Python dependencies
+
+    $ [pip,easy_install] jsonpickle
+    $ [pip,easy_install] pygame # You need to install a bunch of headers for this to work, see the pygame site.
+
+Step 4: Make starting scripts executable
 
     $ cd /path/to/asteroid-lander/game
 
